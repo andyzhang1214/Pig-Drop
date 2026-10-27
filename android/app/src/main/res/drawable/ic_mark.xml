@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 猪猪速递的标记：只有它承担品牌，不外溢。
+<!-- PigDrop 的标记：只有它承担品牌，不外溢。
      24×24 视图；描边统一填白，运行时用 tint 着成主题色。
      22dp 以下不画眼睛（原型里验过，太小会糊成一团），所以这里也只保留鼻孔。 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"

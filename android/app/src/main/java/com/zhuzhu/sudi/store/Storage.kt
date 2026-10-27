@@ -18,7 +18,7 @@ import java.io.OutputStream
 /**
  * 文件落地。
  *
- * 用户选的是「系统下载目录」，所以优先写 `Download/猪猪速递/`——电视自带的文件管理器
+ * 用户选的是「系统下载目录」，所以优先写 `Download/PigDrop/`——电视自带的文件管理器
  * 能看到、能往 U 盘拷。三档策略，从好到次：
  *
  * 1. **Android 10+**：走 MediaStore，不需要任何存储权限，文件对其它应用可见；
@@ -205,7 +205,7 @@ class Storage(private val context: Context) {
     }
 
     companion object {
-        const val FOLDER = "猪猪速递"
+        const val FOLDER = "PigDrop"
         private const val PRIVATE_DIR = "received"
     }
 }

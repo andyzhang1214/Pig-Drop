@@ -1,0 +1,13 @@
+# 构建产物与缓存
+build/
+.gradle/
+.kotlin/
+local.properties
+
+# 发布签名：属于本机，不能进仓库
+keystore.properties
+*.jks
+*.keystore
+
+# 系统噪音
+.DS_Store

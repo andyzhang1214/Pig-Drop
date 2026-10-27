@@ -12,6 +12,11 @@ captures/
 # 本机 SDK 路径，因人而异，不能提交
 local.properties
 
+# 发布签名（密钥 + 口令），属于本机
+keystore.properties
+*.jks
+*.keystore
+
 # IDE
 .idea/
 *.iml

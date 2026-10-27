@@ -584,7 +584,8 @@ class MainActivity : Activity(), FileListView.Listener {
     companion object {
         private const val DEFAULT_PORT = 8080
         private const val REQ_STORAGE = 1001
-        private const val BRAND = "猪猪速递"
+        // 对外品牌名，落盘目录名见 Storage.FOLDER，两者保持一致
+        private const val BRAND = "PigDrop"
 
         /** 只会「接住就退出」的占位包，不能算作能打开文件的应用。 */
         private val STUB_PACKAGES = setOf("com.android.tv.frameworkpackagestubs")

@@ -1,4 +1,6 @@
-# 猪猪速递
+# PigDrop
+
+> 中文名「猪猪速递」。应用桌面显示名、手机上传页标题统一为 **PigDrop**，下载目录是 `Download/PigDrop/`。
 
 电视上打开应用，屏幕上就是一个二维码。手机扫一下，浏览器里选文件，文件直接落到电视的「下载」目录。
 
@@ -18,7 +20,7 @@
 ## 怎么用
 
 1. 电视和手机连同一个 Wi-Fi。
-2. 电视上打开「猪猪速递」，左边就是二维码和地址。
+2. 电视上打开「PigDrop」，左边就是二维码和地址。
 3. 手机扫码（或手动输入 `http://电视IP:8080`），页面上点「选择文件」。
 4. 传完文件出现在电视列表里，手机上也能看到「电视上已有」的清单。
 
@@ -58,23 +60,39 @@
 - **打不开时说人话**：电视上没有对应应用时，按文件类型给下一步建议，而不是弹一句英文 toast 或者干脆没反应。
 - **Android 6.0 起**（API 23），同时出 `armeabi-v7a` 和 `arm64-v8a` 两个包。
 
+## 下载安装
+
+到 [Releases](https://github.com/andyzhang1214/Pig-Drop/releases) 下对应架构的 APK：
+
+| 机型 | 文件 |
+|---|---|
+| 近几年的电视 / 盒子（64 位） | `PigDrop-1.0.0-arm64-v8a.apk` |
+| 老电视、老盒子（32 位） | `PigDrop-1.0.0-armeabi-v7a.apk` |
+
+分不清就装 `arm64-v8a`，装不上再试另一个。
+
+装到电视：`adb install PigDrop-1.0.0-arm64-v8a.apk`，或者拷到 U 盘用电视自带的文件管理器打开。包已用正式密钥签名，不是 debug 包。
+
 ## 自己构建
 
 需要 JDK 17+ 和 Android SDK（Platform 36）。
 
 ```bash
 cd android
-./gradlew :app:assembleDebug
+./gradlew :app:assembleRelease      # 正式包
+./gradlew :app:assembleDebug        # 调试包
 ```
 
 产物：
 
 ```
-android/app/build/outputs/apk/debug/app-arm64-v8a-debug.apk
+android/app/build/outputs/apk/release/app-arm64-v8a-release.apk
+android/app/build/outputs/apk/release/app-armeabi-v7a-release.apk
+android/app/build/outputs/apk/debug/app-arm64-v8a-debug.apk        # 调试用
 android/app/build/outputs/apk/debug/app-armeabi-v7a-debug.apk
 ```
 
-装到电视：`adb install app-arm64-v8a-debug.apk`，或者拷到 U 盘在电视上装。
+签名信息读工程根目录的 `keystore.properties`（已在 `.gitignore` 里，仓库不含密钥）。文件不存在时 release 自动回落到 debug 签名，克隆下来照样能构建——只是签名不同，不能覆盖安装官方包。
 
 跑单元测试：
 
@@ -103,7 +121,7 @@ screenshots/
 
 **为什么不用 `multipart/form-data`。** 传一个 4 GB 的电影时，multipart 要么整包读进内存，要么先落一份临时文件再搬。这里用 `PUT /upload?name=<文件名>` 加裸 body，`Content-Length` 已知就一路 `copy` 到底。
 
-**为什么存储有三档降级。** API 29+ 走 MediaStore 写进系统下载目录（不申请权限）；API 23–28 只能直接写公共 `Download/猪猪速递/`（需要 `WRITE_EXTERNAL_STORAGE`）；权限被拒就退到应用私有目录，功能不残废只是位置变了。设置面板里显示的「保存位置」就是当前实际生效的那一档。
+**为什么存储有三档降级。** API 29+ 走 MediaStore 写进系统下载目录（不申请权限）；API 23–28 只能直接写公共 `Download/PigDrop/`（需要 `WRITE_EXTERNAL_STORAGE`）；权限被拒就退到应用私有目录，功能不残废只是位置变了。设置面板里显示的「保存位置」就是当前实际生效的那一档。
 
 **为什么自己发号。** 最初用 `max(当前时间戳, 已有最大 id + 1)` 生成 id，两个手机同时传文件会算出**同一个 id**。而删除是按 id 过滤的，撞号就会连带删掉别人的文件（实测 30 路并发出现 4 对重复 id，删一个少了两个）。改成单调发号器，启动时用历史最大 id 播种。
 
@@ -118,7 +136,7 @@ screenshots/
 - 只能同局域网，跨网段/VLAN 不通。
 - 没有断点续传，传一半断开要重传。
 - 只在 API 34 的 Android TV 模拟器上验证过完整流程（含 30 路并发压测）；API 23–28 那两档存储降级路径没有真机跑过。
-- 目前只有 debug 包，没有做 release 签名。
+- 仓库里的截图来自一台 1080p 的 API 34 模拟器，真实电视上的字体渲染可能有细微差异。
 - 手机端上传页不超过 6 条「电视上已有」的预览，只是清单，不能管理文件。
 
 ## 设计记录
