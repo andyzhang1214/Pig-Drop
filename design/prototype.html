@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>猪猪速递 · 电视局域网接收站 · 交互原型</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Crect%20width='24'%20height='24'%20rx='5'%20fill='%230f1416'/%3E%3Cg%20fill='none'%20stroke='%233ddcae'%20stroke-width='1.5'%20stroke-linejoin='round'%20stroke-linecap='round'%20transform='translate(1.2%200.5)%20scale(0.9)'%3E%3Cpath%20d='M6.9%209.4c-1.3-1.3-2-3.1-1.7-4.6%201.7.1%203.6%201%204.7%202.3M17.1%209.4c1.3-1.3%202-3.1%201.7-4.6-1.7.1-3.6%201-4.7%202.3'/%3E%3Ccircle%20cx='12'%20cy='14'%20r='7'/%3E%3Cellipse%20cx='12'%20cy='16'%20rx='3.3'%20ry='2.4'/%3E%3Cpath%20d='M10.9%2016h.01M13.1%2016h.01'/%3E%3C/g%3E%3C/svg%3E">
+<style>
+@import url("https://cdn.jsdelivr.net/npm/@fontsource/bebas-neue@5.0.0/index.css");
+@import url("https://cdn.jsdelivr.net/npm/@fontsource-variable/space-grotesk@5.0.0/index.css");
+@import url("https://cdn.jsdelivr.net/npm/@fontsource-variable/fraunces@5.0.0/index.css");
+@import url("https://cdn.jsdelivr.net/npm/@fontsource-variable/archivo@5.0.0/index.css");
+@import url("https://cdn.jsdelivr.net/npm/@fontsource/archivo-black@5.0.0/index.css");
+@import url("https://cdn.jsdelivr.net/npm/@fontsource/ibm-plex-mono@5.0.0/index.css");
+@import url("https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-sc@5.0.0/700.css");
+@import url("https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-sc@5.0.0/900.css");
+@import url("https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5.0.0/600.css");
+@import url("https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5.0.0/400.css");
+</style>
+<style>
+/* ============ 产品 token · 四套主题 ============ */
+
+.t-noir{
+  --bg:oklch(0.155 0.018 252); --bg-2:oklch(0.195 0.022 252);
+  --surface:oklch(0.225 0.024 250); --surface-2:oklch(0.275 0.028 250);
+  --line:oklch(1 0 0 / 0.10); --line-2:oklch(1 0 0 / 0.20);
+  --ink:oklch(0.965 0.008 250); --ink-2:oklch(0.80 0.015 250); --ink-3:oklch(0.6542 0.0227 248.17);
+  --accent:oklch(0.86 0.17 168); --accent-2:oklch(0.60 0.13 168); --accent-ink:oklch(0.18 0.03 168);
+  --danger:oklch(0.68 0.19 22); --danger-ink:oklch(0.16 0.03 22);
+  --qr-bg:oklch(0.97 0.005 250); --qr-fg:oklch(0.16 0.02 252);
+  --radius:6px; --radius-lg:10px; --radius-pill:999px;
+  --fd:"Bebas Neue","Noto Sans SC",sans-serif;
+  --fb:"Space Grotesk Variable","Noto Sans SC",sans-serif;
+  --f-label:"Space Grotesk Variable","Noto Sans SC",sans-serif;
+  --disp-scale:1.10; --disp-track:0.03em; --disp-weight:500; --disp-case:none;
+  --label-track:0.14em; --label-case:uppercase; --label-size:11px; --label-weight:500;
+  --focus-sh:0 0 0 2px var(--bg),0 0 0 4px var(--accent),0 0 32px oklch(0.86 0.17 168 / 0.28);
+  /* 行内小按钮用紧凑版焦点框：列表 overflow 会裁掉 32px 外发光 */
+  --focus-sh-sm:0 0 0 2px var(--accent),0 0 15px oklch(0.86 0.17 168 / 0.34);
+  --hard:0 0 0 0 transparent;
+  --row-hover:oklch(1 0 0 / 0.05);
+}
+.t-paper{
+  --bg:oklch(0.955 0.014 78); --bg-2:oklch(0.925 0.018 76);
+  --surface:oklch(0.985 0.008 80); --surface-2:oklch(0.945 0.016 78);
+  --line:oklch(0.30 0.025 62 / 0.14); --line-2:oklch(0.30 0.025 62 / 0.30);
+  --ink:oklch(0.27 0.022 58); --ink-2:oklch(0.45 0.025 60); --ink-3:oklch(0.5089 0.0181 67.40);
+  --accent:oklch(0.545 0.135 42); --accent-2:oklch(0.70 0.11 46); --accent-ink:oklch(0.99 0.01 80);
+  --danger:oklch(0.505 0.185 27); --danger-ink:oklch(0.99 0.01 80);
+  --qr-bg:oklch(0.995 0.004 80); --qr-fg:oklch(0.25 0.022 58);
+  --radius:14px; --radius-lg:22px; --radius-pill:999px;
+  --fd:"Fraunces Variable","Noto Serif SC",Georgia,serif;
+  --fb:"Archivo Variable","Noto Sans SC",sans-serif;
+  --f-label:"Archivo Variable","Noto Sans SC",sans-serif;
+  --disp-scale:1.0; --disp-track:-0.01em; --disp-weight:600; --disp-case:none;
+  --label-track:0.06em; --label-case:none; --label-size:11.5px; --label-weight:500;
+  --focus-sh:0 0 0 2px var(--bg),0 0 0 4px var(--accent);
+  --focus-sh-sm:0 0 0 2px var(--accent);
+  --hard:4px 4px 0 var(--accent);
+  --row-hover:oklch(0.30 0.025 62 / 0.045);
+}
+.t-grid{
+  --bg:oklch(0.972 0 0); --bg-2:oklch(0.94 0 0);
+  --surface:oklch(1 0 0); --surface-2:oklch(0.955 0 0);
+  --line:oklch(0.14 0 0 / 0.85); --line-2:oklch(0.14 0 0);
+  --ink:oklch(0.145 0 0); --ink-2:oklch(0.40 0 0); --ink-3:oklch(0.58 0 0);
+  --accent:oklch(0.545 0.215 27); --accent-2:oklch(0.62 0.19 27); --accent-ink:oklch(1 0 0);
+  --danger:oklch(0.50 0.205 27); --danger-ink:oklch(1 0 0);
+  --qr-bg:oklch(1 0 0); --qr-fg:oklch(0.12 0 0);
+  --radius:0px; --radius-lg:0px; --radius-pill:0px;
+  --fd:"Archivo Black","Noto Sans SC",sans-serif;
+  --fb:"Archivo Variable","Noto Sans SC",sans-serif;
+  --f-label:"Archivo Variable","Noto Sans SC",sans-serif;
+  --disp-scale:0.92; --disp-track:-0.02em; --disp-weight:400; --disp-case:none;
+  --label-track:0.10em; --label-case:uppercase; --label-size:10.5px; --label-weight:600;
+  --focus-sh:0 0 0 3px var(--accent);
+  --focus-sh-sm:0 0 0 2px var(--accent);
+  --hard:0 0 0 0 transparent;
+  --row-hover:oklch(0.14 0 0 / 0.05);
+}
+.t-term{
+  --bg:oklch(0.135 0.014 155); --bg-2:oklch(0.175 0.018 155);
+  --surface:oklch(0.195 0.020 155); --surface-2:oklch(0.245 0.024 155);
+  --line:oklch(0.85 0.16 145 / 0.22); --line-2:oklch(0.85 0.16 145 / 0.42);
+  --ink:oklch(0.92 0.075 145); --ink-2:oklch(0.74 0.085 145); --ink-3:oklch(0.56 0.07 148);
+  --accent:oklch(0.86 0.19 142); --accent-2:oklch(0.62 0.15 142); --accent-ink:oklch(0.13 0.02 155);
+  --danger:oklch(0.62 0.21 27); --danger-ink:oklch(0.13 0.02 155);
+  --qr-bg:oklch(0.955 0.02 145); --qr-fg:oklch(0.14 0.02 155);
+  --radius:0px; --radius-lg:0px; --radius-pill:0px;
+  --fd:"IBM Plex Mono","Noto Sans SC",monospace;
+  --fb:"IBM Plex Mono","Noto Sans SC",monospace;
+  --f-label:"IBM Plex Mono","Noto Sans SC",monospace;
+  --disp-scale:0.96; --disp-track:0.02em; --disp-weight:700; --disp-case:none;
+  --label-track:0.12em; --label-case:uppercase; --label-size:11px; --label-weight:500;
+  --focus-sh:0 0 0 1px var(--bg),0 0 0 3px var(--accent);
+  --focus-sh-sm:0 0 0 2px var(--accent);
+  --hard:0 0 0 0 transparent;
+  --row-hover:oklch(0.86 0.19 142 / 0.08);
+}
+
+/* ============ 展示台（固定深色，与产品区分） ============ */
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:#0b0c0e; color:#e6e4df;
+  font-family:"Space Grotesk Variable",ui-sans-serif,system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased; font-feature-settings:"ss01";
+  min-height:100vh;
+}
+.shell{max-width:1560px;margin:0 auto;padding:44px 34px 96px}
+
+.masthead{display:flex;justify-content:space-between;align-items:flex-end;gap:36px;flex-wrap:wrap;
+  border-bottom:1px solid #212328;padding-bottom:26px}
+.wordmark{display:flex;align-items:baseline;gap:14px}
+.wordmark b{font-size:30px;font-weight:500;letter-spacing:-.02em;color:#f4f2ed}
+.wordmark span{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:#6d7078}
+.masthead p{margin:12px 0 0;max-width:56ch;font-size:13.5px;line-height:1.65;color:#8b8e96}
+.masthead p em{color:#c9c6c0;font-style:normal}
+
+.controls{display:flex;flex-direction:column;gap:14px;align-items:flex-end}
+.ctrl-label{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.18em;
+  text-transform:uppercase;color:#5f626a}
+.themes{display:flex;gap:8px;flex-wrap:wrap}
+.tbtn{display:flex;align-items:center;gap:9px;height:40px;padding:0 15px 0 12px;cursor:pointer;
+  background:#14161a;border:1px solid #24272d;border-radius:7px;color:#9a9da5;
+  font:inherit;font-size:12.5px;transition:border-color .18s,color .18s,background .18s}
+.tbtn:hover{border-color:#3a3e46;color:#d7d4ce}
+.tbtn[aria-pressed="true"]{background:#1c1f24;border-color:#4b5058;color:#f2f0eb}
+.sw{width:14px;height:14px;border-radius:3px;border:1px solid #ffffff22;flex:none}
+
+.onebtns{display:flex;gap:8px}
+.gbtn{height:34px;padding:0 13px;cursor:pointer;background:transparent;border:1px solid #24272d;
+  border-radius:6px;color:#8b8e96;font:inherit;font-size:11.5px;letter-spacing:.02em;
+  transition:.18s}
+.gbtn:hover{border-color:#3f444c;color:#d7d4ce}
+.gbtn[aria-pressed="true"]{background:#1c1f24;border-color:#4b5058;color:#f2f0eb}
+
+/* ============ 舞台 ============ */
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 312px;gap:52px;align-items:start;margin-top:46px}
+.stage.solo{grid-template-columns:minmax(0,1fr);justify-items:center}
+.stage.solo .phone-wrap{display:none}
+
+.tv-wrap{width:100%;max-width:1180px}
+.tv-bezel{position:relative;padding:9px;background:#15171b;border:1px solid #2a2d33;
+  border-radius:13px;box-shadow:0 40px 90px -50px #000,0 2px 0 #ffffff08 inset}
+.tv-screen{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:5px;
+  background:#000}
+.tv-canvas{position:absolute;top:0;left:0;width:1280px;height:720px;transform-origin:top left}
+
+.phone-wrap{position:sticky;top:28px;width:100%;display:flex;flex-direction:column;align-items:center}
+.phone-bezel{position:relative;width:100%;padding:9px;background:#15171b;border:1px solid #2a2d33;
+  border-radius:32px;box-shadow:0 34px 70px -40px #000}
+.phone-screen{position:relative;width:100%;aspect-ratio:390/844;overflow:hidden;border-radius:24px;
+  background:#000}
+.phone-canvas{position:absolute;top:0;left:0;width:390px;height:844px;transform-origin:top left}
+
+.devlabel{margin-top:13px;display:flex;align-items:center;gap:8px;
+  font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;color:#5d6068}
+.devlabel i{width:5px;height:5px;border-radius:50%;background:#3f444c;display:block}
+
+/* ============ 电视端 UI ============ */
+.tv{width:1280px;height:720px;display:flex;flex-direction:column;
+  background:var(--bg);color:var(--ink);font-family:var(--fb);position:relative;overflow:hidden}
+.t-term .tv::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:repeating-linear-gradient(to bottom,#0000 0 3px,#04170c 3px 4px);opacity:.34}
+.t-term .qr-plate,.t-term .incoming,.t-term .sheet-card,
+.t-term .mark,.t-term .brand,.t-term .qr-hint,.t-term .qr-url,.t-term .tv-actions{
+  position:relative;z-index:4}
+
+.tv-top{display:flex;align-items:center;justify-content:space-between;
+  padding:30px 56px 26px;border-bottom:1px solid var(--line);flex:none;position:relative;z-index:2}
+.brand{display:flex;align-items:center;gap:14px;min-width:0}
+.mark{width:22px;height:22px;flex:none;color:var(--accent)}
+.mark svg{display:block;width:100%;height:100%}
+.brand-name{font-family:var(--fd);font-size:calc(27px * var(--disp-scale));line-height:1;
+  font-weight:var(--disp-weight);letter-spacing:var(--disp-track);
+  text-transform:var(--disp-case);color:var(--ink)}
+.brand-role{font-family:var(--f-label);font-size:var(--label-size);font-weight:var(--label-weight);
+  letter-spacing:var(--label-track);text-transform:var(--label-case);color:var(--ink-3);
+  padding-left:14px;margin-left:2px;border-left:1px solid var(--line-2);line-height:1.2}
+.tv-meta{display:flex;align-items:center;gap:11px;font-family:"IBM Plex Mono",monospace;
+  font-size:12.5px;color:var(--ink-2);letter-spacing:.01em}
+.live{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;
+  box-shadow:0 0 0 3px color-mix(in oklch,var(--accent) 22%,transparent)}
+.pill{border:1px solid var(--line-2);border-radius:var(--radius-pill);padding:5px 11px;
+  font-family:var(--f-label);font-size:var(--label-size);letter-spacing:var(--label-track);
+  text-transform:var(--label-case);color:var(--ink-2);font-weight:var(--label-weight)}
+
+.tv-main{flex:1;display:grid;grid-template-columns:392px 1fr;gap:0;min-height:0;
+  position:relative;z-index:2}
+.tv-left{padding:40px 44px 34px 56px;border-right:1px solid var(--line);
+  display:flex;flex-direction:column;align-items:flex-start}
+.tv-right{padding:36px 56px 26px 46px;display:flex;flex-direction:column;min-height:0}
+
+.qr-plate{width:224px;height:224px;background:var(--qr-bg);color:var(--qr-fg);
+  border-radius:calc(var(--radius) * 0.7);padding:16px;flex:none;display:block;
+  border:1px solid var(--line-2);outline:none;transition:box-shadow .16s}
+.qr-plate.focused{box-shadow:var(--focus-sh)}
+.t-grid .qr-plate.focused,.t-term .qr-plate.focused{outline:2px solid var(--accent);outline-offset:5px}
+.qr-plate svg{display:block;width:100%;height:100%}
+.qr-hint{margin:24px 0 0;font-size:16.5px;line-height:1.45;color:var(--ink-2);max-width:25ch}
+.qr-zoom{display:flex;align-items:center;gap:8px;margin-top:14px;
+  font-family:var(--f-label);font-size:var(--label-size);letter-spacing:var(--label-track);
+  text-transform:var(--label-case);color:var(--ink-3);font-weight:var(--label-weight)}
+.qr-url{margin-top:auto;font-family:"IBM Plex Mono",monospace;font-size:15px;color:var(--accent);
+  letter-spacing:.02em;padding:9px 13px;border:1px solid var(--line-2);border-radius:var(--radius);
+  background:var(--surface);white-space:nowrap}
+.t-addr-label{font-family:var(--f-label);font-size:var(--label-size);letter-spacing:var(--label-track);
+  text-transform:var(--label-case);color:var(--ink-3);font-weight:var(--label-weight);
+  margin-bottom:9px;display:block}
+
+.list-head{display:flex;align-items:baseline;justify-content:space-between;gap:20px;
+  padding-bottom:16px;border-bottom:1px solid var(--line-2);flex:none}
+.list-head h2{margin:0;font-family:var(--fd);font-size:calc(34px * var(--disp-scale));
+  line-height:.95;font-weight:var(--disp-weight);letter-spacing:var(--disp-track);
+  text-transform:var(--disp-case);color:var(--ink)}
+.list-meta{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink-3);
+  white-space:nowrap;font-variant-numeric:tabular-nums}
+.list-tools{display:flex;align-items:center;gap:16px}
+
+.file-list{list-style:none;margin:0;padding:0;overflow-y:auto;min-height:0;flex:1;
+  scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
+.file-list::-webkit-scrollbar{width:5px}
+.file-list::-webkit-scrollbar-thumb{background:var(--line-2)}
+
+/* 行内列序：图标 · 文件名 · 大小 · 打开 · 删除。
+   每行是独立的 grid，auto 列宽不跨行共享，所以体积列必须给固定宽度，
+   否则每行文字不同、体积列左右边界会各走各的，纵向对不齐。
+   58px 够放最长的「1023 KB」（7 位等宽字符 ≈ 55px）。
+   常驻操作做成行内按钮，是为了让「删一个文件」不必先进管理模式再按到底部操作条。 */
+.row{display:grid;grid-template-columns:40px minmax(0,1fr) 58px auto auto;align-items:center;
+  gap:15px;padding:13px 18px;border-bottom:1px solid var(--line);cursor:pointer;
+  border-radius:var(--radius);outline:none;transition:background .14s;position:relative}
+.row:hover{background:var(--row-hover)}
+.row .ic{width:40px;height:40px;display:grid;place-items:center;border:1px solid var(--line-2);
+  border-radius:calc(var(--radius) * .7);color:var(--accent);flex:none}
+.row .ic svg{width:19px;height:19px;display:block}
+.row .mid{min-width:0;display:block}
+.row .nm{display:block;font-size:16px;color:var(--ink);line-height:1.3;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .sub{display:block;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-3);
+  margin-top:4px;letter-spacing:.02em}
+.row .sz{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink-2);
+  font-variant-numeric:tabular-nums;white-space:nowrap;justify-self:end;text-align:right}
+
+.row.focused{background:var(--row-hover);box-shadow:var(--focus-sh);z-index:3;position:relative}
+.row.focused .nm{color:var(--ink)}
+/* 焦点在行内按钮上时，所属行点亮一条竖线，用户才知道自己在操作哪个文件 */
+.row.active{background:var(--row-hover)}
+.row.active::after{content:"";position:absolute;left:0;top:8px;bottom:8px;width:2px;
+  background:var(--accent);border-radius:1px}
+
+/* 行内操作按钮 */
+.ract{height:31px;padding:0 12px;display:inline-flex;align-items:center;justify-content:center;
+  cursor:pointer;background:transparent;color:var(--ink-2);border:1px solid var(--line-2);
+  border-radius:calc(var(--radius) * .8);font-family:var(--f-label);font-size:var(--label-size);
+  font-weight:var(--label-weight);letter-spacing:var(--label-track);
+  text-transform:var(--label-case);white-space:nowrap;transition:.14s}
+.ract:hover{color:var(--ink);background:var(--surface);border-color:var(--ink-3)}
+.ract.focused{color:var(--ink);background:var(--surface);border-color:var(--accent);
+  box-shadow:var(--focus-sh-sm)}
+/* 删除按钮平时压成次要色，焦点/悬停时才露出危险色，避免整列红字抢注意力 */
+.ract.rdel{color:var(--ink-3)}
+.ract.rdel:hover{color:var(--danger);border-color:color-mix(in oklch,var(--danger) 45%,var(--line-2));
+  background:color-mix(in oklch,var(--danger) 8%,transparent)}
+.ract.rdel.focused{color:var(--danger);border-color:var(--danger);
+  background:color-mix(in oklch,var(--danger) 12%,transparent);box-shadow:var(--focus-sh-sm)}
+
+/* 管理模式：勾选框取代类型图标，行内按钮让位给底部批量操作条 */
+#tv[data-manage] .row{grid-template-columns:40px minmax(0,1fr) 58px}
+#tv[data-manage] .ract{display:none}
+.row .chk{width:26px;height:26px;border:1.5px solid var(--ink-3);flex:none;justify-self:center;
+  border-radius:calc(var(--radius) * .55);display:grid;place-items:center;color:transparent;
+  transition:background .13s,color .13s,border-color .13s}
+.row .chk svg{width:16px;height:16px;display:block}
+.row.sel{background:color-mix(in oklch,var(--accent) 9%,transparent)}
+.row.sel .chk{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.row.sel::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;
+  background:var(--accent);border-radius:calc(var(--radius) * .4)}
+
+.empty{flex:1;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+  gap:14px;padding:0 0 44px}
+.empty-ic{width:76px;height:76px;color:var(--ink-3);opacity:.62;margin-bottom:-4px}
+.empty-ic svg{width:100%;height:100%;display:block}
+.empty h3{margin:0;font-family:var(--fd);font-size:calc(28px * var(--disp-scale));
+  font-weight:var(--disp-weight);letter-spacing:var(--disp-track);
+  text-transform:var(--disp-case);color:var(--ink-2)}
+.empty p{margin:0;font-size:15px;line-height:1.6;color:var(--ink-3);max-width:36ch}
+
+.tv-foot{flex:none;display:flex;align-items:center;justify-content:space-between;
+  padding:0 56px 22px;position:relative;z-index:2}
+.hints{display:flex;gap:22px;align-items:center}
+.hint{display:flex;align-items:center;gap:8px;font-family:var(--f-label);font-size:var(--label-size);
+  letter-spacing:var(--label-track);text-transform:var(--label-case);color:var(--ink-3);
+  font-weight:var(--label-weight)}
+.key{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;
+  border:1px solid var(--line-2);border-radius:calc(var(--radius) * .55);
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-2);line-height:1}
+.heartbeat{display:flex;align-items:flex-end;gap:3px;height:14px}
+.heartbeat i{width:2px;background:var(--accent-2);display:block;border-radius:1px}
+
+/* 管理模式底部操作条：替换掉按键提示 */
+.manage-bar{display:none;align-items:center;gap:10px}
+#tv[data-manage] .manage-bar{display:flex}
+#tv[data-manage] .hints{display:none}
+#tv[data-manage] .list-head .abtn[data-f="manage"]{display:none}
+
+.tv-actions{display:flex;gap:10px;margin-top:20px}
+.abtn{height:36px;padding:0 15px;cursor:pointer;background:transparent;color:var(--ink-2);
+  border:1px solid var(--line-2);border-radius:var(--radius);font-family:var(--f-label);
+  font-size:var(--label-size);font-weight:var(--label-weight);letter-spacing:var(--label-track);
+  text-transform:var(--label-case);transition:.15s}
+.abtn:hover{color:var(--ink);background:var(--surface)}
+.abtn.focused{box-shadow:var(--focus-sh);color:var(--ink)}
+.abtn.sm{height:30px;padding:0 12px;font-size:calc(var(--label-size) - 0.5px)}
+.abtn[disabled]{opacity:.34;pointer-events:none}
+.abtn.danger{background:var(--danger);border-color:var(--danger);color:var(--danger-ink)}
+.abtn.danger.focused{box-shadow:var(--focus-sh);color:var(--danger-ink)}
+.abtn.ghost-danger{border-color:color-mix(in oklch,var(--danger) 50%,var(--line-2));color:var(--danger)}
+.abtn.ghost-danger:hover{background:color-mix(in oklch,var(--danger) 12%,transparent);color:var(--danger)}
+
+/* 接收浮层 */
+.incoming{position:absolute;right:56px;bottom:96px;width:376px;z-index:5;
+  background:var(--surface);border:1px solid var(--line-2);border-radius:var(--radius-lg);
+  padding:18px 20px;box-shadow:0 24px 50px -24px #000a;
+  display:none}
+.incoming.on{display:block;animation:slidein .3s cubic-bezier(.16,1,.3,1)}
+@keyframes slidein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.inc-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.inc-title{font-family:var(--f-label);font-size:var(--label-size);letter-spacing:var(--label-track);
+  text-transform:var(--label-case);color:var(--ink-2);font-weight:var(--label-weight)}
+.inc-pct{font-family:"IBM Plex Mono",monospace;font-size:15px;color:var(--accent);
+  font-variant-numeric:tabular-nums}
+.inc-name{font-size:14.5px;color:var(--ink);white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;margin-bottom:11px}
+.bar{height:3px;background:var(--line-2);border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .12s linear}
+.inc-sub{display:flex;justify-content:space-between;margin-top:9px;
+  font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-3)}
+
+/* 全屏二维码：电视 3 米外看不清小码时的放大态 */
+.qrbig{position:absolute;inset:0;z-index:10;display:none;flex-direction:column;
+  align-items:center;justify-content:center;gap:26px;
+  background:color-mix(in oklch,var(--bg) 94%,transparent);backdrop-filter:blur(8px)}
+.qrbig.on{display:flex}
+.qrbig .plate{background:var(--qr-bg);color:var(--qr-fg);padding:26px;border-radius:calc(var(--radius)*1.2);
+  box-shadow:0 40px 90px -30px #000b}
+.qrbig svg{display:block;width:330px;height:330px}
+.qrbig .u{font-family:"IBM Plex Mono",monospace;font-size:20px;color:var(--accent);letter-spacing:.03em}
+.qrbig .t{font-family:var(--f-label);font-size:var(--label-size);letter-spacing:var(--label-track);
+  text-transform:var(--label-case);color:var(--ink-3);font-weight:var(--label-weight)}
+
+/* 设置面板 */
+.sheet{position:absolute;inset:0;background:color-mix(in oklch,var(--bg) 88%,transparent);
+  backdrop-filter:blur(6px);z-index:9;display:none;align-items:center;justify-content:center}
+.sheet.on{display:flex}
+.sheet-card{width:760px;background:var(--bg-2);border:1px solid var(--line-2);
+  border-radius:var(--radius-lg);padding:36px 40px 30px}
+.sheet-card h2{margin:0 0 6px;font-family:var(--fd);font-size:calc(30px * var(--disp-scale));
+  font-weight:var(--disp-weight);letter-spacing:var(--disp-track);
+  text-transform:var(--disp-case);color:var(--ink)}
+.sheet-card>p{margin:0 0 26px;font-size:14px;color:var(--ink-3)}
+.srow{display:flex;align-items:center;justify-content:space-between;gap:24px;
+  padding:17px 16px;border-top:1px solid var(--line);border-radius:var(--radius);cursor:pointer}
+.srow:last-of-type{border-bottom:1px solid var(--line)}
+.srow .k{font-size:15px;color:var(--ink)}
+.srow .v{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink-2);
+  display:flex;align-items:center;gap:10px}
+.tog{width:38px;height:21px;border-radius:var(--radius-pill);border:1px solid var(--line-2);
+  position:relative;flex:none;transition:.18s;background:transparent;display:block}
+.tog i{position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;
+  background:var(--ink-3);transition:.18s}
+.tog[data-on="1"]{background:var(--accent);border-color:var(--accent)}
+.tog[data-on="1"] i{left:19px;background:var(--accent-ink)}
+.srow.focused{box-shadow:var(--focus-sh);background:var(--row-hover)}
+.sheet-foot{margin-top:26px;display:flex;justify-content:flex-end;gap:10px}
+
+/* 打开：全屏交接态。
+   Android TV 上「打开文件」并不是在本应用里渲染画面，而是把 Uri 交给系统播放器 / 相册 / 安装器，
+   本应用随即退到后台。所以这里不假装播放，只如实交代交接对象——以及没有可用应用时的那种情况。 */
+.viewer{position:absolute;inset:0;z-index:11;display:none;flex-direction:column;
+  align-items:center;justify-content:center;
+  background:color-mix(in oklch,var(--bg) 94%,transparent);backdrop-filter:blur(9px)}
+.viewer.on{display:flex;animation:vfade .2s ease}
+@keyframes vfade{from{opacity:0}to{opacity:1}}
+.vw-ic{width:88px;height:88px;display:grid;place-items:center;border:1px solid var(--line-2);
+  border-radius:calc(var(--radius) * 1.2);color:var(--accent);margin-bottom:28px}
+.vw-ic svg{width:40px;height:40px;display:block}
+/* 文件名用正文字体：标题字体没有小写字母，会把 .mp4 画成 .MP4 */
+.vw-nm{font-family:var(--fb);font-size:calc(27px * var(--disp-scale));font-weight:600;
+  line-height:1.25;color:var(--ink);text-align:center;max-width:30ch;
+  word-break:break-all;text-transform:none}
+.vw-meta{margin-top:12px;font-family:"IBM Plex Mono",monospace;font-size:12.5px;
+  color:var(--ink-3);letter-spacing:.02em}
+.vw-note{margin-top:30px;padding-top:24px;border-top:1px solid var(--line);
+  font-size:14.5px;line-height:1.6;color:var(--ink-3);text-align:center;max-width:44ch}
+.vw-note b{display:block;font-weight:500;font-size:15.5px;color:var(--ink-2);margin-bottom:6px}
+.vw-note.alert b{color:var(--danger)}
+.vw-btns{display:flex;gap:10px;margin-top:32px}
+
+/* 删除确认：遥控器误触代价不可逆，所以这一步必须是显式二次确认 */
+.confirm{position:absolute;inset:0;z-index:12;display:none;align-items:center;justify-content:center;
+  background:color-mix(in oklch,var(--bg) 80%,transparent);backdrop-filter:blur(7px)}
+.confirm.on{display:flex}
+.confirm-card{width:580px;background:var(--bg-2);border:1px solid var(--line-2);
+  border-radius:var(--radius-lg);padding:30px 34px 26px;box-shadow:0 40px 90px -40px #000c;
+  animation:pop .22s cubic-bezier(.16,1,.3,1)}
+@keyframes pop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+.confirm-hd{display:flex;gap:18px;align-items:flex-start}
+.confirm-ic{width:42px;height:42px;flex:none;display:grid;place-items:center;
+  border:1px solid color-mix(in oklch,var(--danger) 50%,var(--line-2));
+  border-radius:calc(var(--radius) * .8);color:var(--danger)}
+.confirm-ic svg{width:21px;height:21px;display:block}
+.confirm-card h2{margin:0;font-family:var(--fd);font-size:calc(24px * var(--disp-scale));
+  line-height:1.2;font-weight:var(--disp-weight);letter-spacing:var(--disp-track);
+  text-transform:var(--disp-case);color:var(--ink)}
+.confirm-card p{margin:10px 0 0;font-size:13.5px;line-height:1.55;color:var(--ink-2)}
+.confirm-card p b{font-weight:500;color:var(--ink-2);word-break:break-all}
+.confirm-btns{display:flex;justify-content:flex-end;gap:10px;margin-top:28px}
+
+/* ============ 手机端 UI ============ */
+.ph{width:390px;height:844px;background:var(--bg);color:var(--ink);font-family:var(--fb);
+  display:flex;flex-direction:column;position:relative;overflow:hidden}
+.t-term .ph::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:repeating-linear-gradient(to bottom,#0000 0 3px,#04170c 3px 4px);opacity:.3}
+.t-term .ph-head,.t-term .drop,.t-term .ph-body,.t-term .ph-foot,.t-term .grabber{
+  position:relative;z-index:3}
+.grabber{display:flex;justify-content:space-between;align-items:center;padding:14px 24px 0;
+  font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-2);flex:none;z-index:2}
+.grabber .dots{display:flex;gap:5px;align-items:center;color:var(--ink-2)}
+.ph-head{padding:22px 24px 20px;flex:none;z-index:2}
+.ph-conn{display:flex;align-items:center;justify-content:space-between;gap:9px;
+  font-family:var(--f-label);font-size:var(--label-size);letter-spacing:var(--label-track);
+  text-transform:var(--label-case);color:var(--ink-3);font-weight:var(--label-weight)}
+.ph-brand{display:inline-flex;align-items:center;gap:7px;color:var(--ink-2);
+  letter-spacing:.02em;text-transform:none;font-size:calc(var(--label-size) + 0.5px)}
+.ph-brand svg{width:15px;height:15px;flex:none;color:var(--accent)}
+.ph-live{display:inline-flex;align-items:center;gap:9px;white-space:nowrap}
+.ph-head h1{margin:14px 0 0;font-family:var(--fd);font-size:calc(32px * var(--disp-scale));
+  line-height:1;font-weight:var(--disp-weight);letter-spacing:var(--disp-track);
+  text-transform:var(--disp-case);color:var(--ink)}
+.ph-head .target{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;
+  color:var(--ink-2)}
+.ph-head .target b{font-weight:500;color:var(--ink)}
+
+.drop{margin:0 24px;flex:none;border:1px dashed var(--line-2);border-radius:var(--radius-lg);
+  padding:30px 22px;display:flex;flex-direction:column;align-items:center;gap:11px;
+  background:var(--surface);transition:.18s;cursor:pointer;z-index:2}
+.drop.over{border-color:var(--accent);background:var(--surface-2)}
+.drop-ic{width:38px;height:38px;color:var(--accent)}
+.drop-ic svg{width:100%;height:100%;display:block}
+.drop b{font-size:15px;font-weight:500;color:var(--ink)}
+.drop span{font-size:12.5px;color:var(--ink-3);text-align:center;line-height:1.5}
+.ph-body{flex:1;min-height:0;overflow-y:auto;padding:26px 24px 0;z-index:2;
+  scrollbar-width:none}
+.ph-body::-webkit-scrollbar{display:none}
+.sec-t{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.sec-t h2{margin:0;font-family:var(--f-label);font-size:var(--label-size);
+  letter-spacing:var(--label-track);text-transform:var(--label-case);color:var(--ink-3);
+  font-weight:var(--label-weight)}
+.sec-t em{font-style:normal;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-3)}
+
+.tx{display:flex;gap:12px;align-items:flex-start;padding:13px 0;
+  border-top:1px solid var(--line)}
+.tx:last-child{border-bottom:1px solid var(--line)}
+.tx .ic{width:32px;height:32px;display:grid;place-items:center;border:1px solid var(--line-2);
+  border-radius:calc(var(--radius) * .6);color:var(--accent);flex:none;margin-top:1px}
+.tx .ic svg{width:15px;height:15px}
+.tx .body{min-width:0;flex:1}
+.tx .nm{font-size:13.5px;color:var(--ink);white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis}
+.tx .sub{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-3);
+  margin-top:4px;display:flex;gap:8px;align-items:center}
+.mini{height:3px;background:var(--line-2);border-radius:2px;margin-top:8px;overflow:hidden}
+.mini i{display:block;height:100%;background:var(--accent);width:0;transition:width .12s linear}
+.tick{color:var(--accent);flex:none;width:16px;height:16px;margin-top:2px}
+.tick svg{width:100%;height:100%;display:block}
+.ph-empty{padding:30px 0;font-size:12.5px;line-height:1.6;color:var(--ink-3);
+  border-top:1px solid var(--line)}
+
+.ph-foot{flex:none;padding:16px 24px 26px;border-top:1px solid var(--line);z-index:2;
+  display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ph-foot .addr{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-3);
+  line-height:1.4}
+.ph-btn{height:42px;padding:0 18px;border:1px solid var(--accent);background:var(--accent);
+  color:var(--accent-ink);border-radius:var(--radius);font-family:var(--f-label);
+  font-size:12.5px;font-weight:500;letter-spacing:var(--label-track);
+  text-transform:var(--label-case);cursor:pointer;transition:.16s;box-shadow:var(--hard)}
+.ph-btn:hover{filter:brightness(1.06)}
+
+/* ============ 说明区 ============ */
+.notes{margin-top:86px;border-top:1px solid #212328;padding-top:34px;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:26px}
+.note h3{margin:0 0 9px;font-size:12.5px;font-weight:500;letter-spacing:.02em;color:#d9d6d0}
+.note p{margin:0;font-size:12.5px;line-height:1.7;color:#7d8089}
+.note code{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:#a9acb4;
+  background:#15171b;padding:1px 5px;border-radius:3px}
+.legend{display:flex;gap:6px;margin-top:12px}
+.legend i{width:20px;height:20px;border-radius:3px;display:block;border:1px solid #ffffff18}
+
+@media (max-width:1120px){
+  .stage{grid-template-columns:minmax(0,1fr);gap:40px;justify-items:center}
+  .phone-wrap{position:static;width:100%;max-width:390px}
+  .shell{padding:32px 20px 70px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="masthead">
+    <div>
+      <div class="wordmark"><b id="appName">猪猪速递</b><span>Piggy Express · TV File Drop</span></div>
+      <p>电视端启动即成为一个局域网接收站，屏幕显示二维码；手机扫码打开网页直接上传，<em>手机上不需要安装任何应用</em>。以下为可交互原型——用键盘方向键遥控电视，往下对着手机拖文件。</p>
+    </div>
+    <div class="controls">
+      <div>
+        <div class="ctrl-label">视觉主题</div>
+        <div class="themes" role="group" aria-label="主题切换">
+          <button class="tbtn" data-theme="noir" aria-pressed="true"><i class="sw" style="background:oklch(0.86 0.17 168)"></i>夜航</button>
+          <button class="tbtn" data-theme="paper" aria-pressed="false"><i class="sw" style="background:oklch(0.545 0.135 42)"></i>素纸</button>
+          <button class="tbtn" data-theme="grid" aria-pressed="false"><i class="sw" style="background:oklch(0.545 0.215 27)"></i>网格</button>
+          <button class="tbtn" data-theme="term" aria-pressed="false"><i class="sw" style="background:oklch(0.86 0.19 142)"></i>终端</button>
+        </div>
+      </div>
+      <div class="onebtns">
+        <button class="gbtn" id="btnSolo" aria-pressed="false">电视全宽</button>
+        <button class="gbtn" id="btnSheet">电视设置页</button>
+        <button class="gbtn" id="btnReset">清空记录</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="stage" id="stage">
+    <div class="tv-wrap">
+      <div class="tv-bezel">
+        <div class="tv-screen">
+          <div class="tv-canvas t-noir" id="tv">
+            <div class="tv">
+              <header class="tv-top">
+                <div class="brand">
+                  <span class="mark">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                      stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">
+                      <path d="M6.9 9.4c-1.3-1.3-2-3.1-1.7-4.6 1.7.1 3.6 1 4.7 2.3M17.1 9.4c1.3-1.3 2-3.1 1.7-4.6-1.7.1-3.6 1-4.7 2.3"/>
+                      <circle cx="12" cy="14" r="7"/>
+                      <ellipse cx="12" cy="16" rx="3.3" ry="2.4"/>
+                      <path d="M10.9 16h.01M13.1 16h.01"/>
+                    </svg>
+                  </span>
+                  <span class="brand-name" id="tvName">猪猪速递</span>
+                  <span class="brand-role">局域网接收站</span>
+                </div>
+                <div class="tv-meta">
+                  <span class="live"></span>192.168.1.42:8080
+                  <span class="pill">1 台设备在线</span>
+                </div>
+              </header>
+
+              <main class="tv-main">
+                <section class="tv-left">
+                  <div class="qr-plate" id="qr" data-f="qr" tabindex="-1"></div>
+                  <p class="qr-hint">手机扫码，浏览器直接上传。<br>同一 Wi-Fi，无需装 App。</p>
+                  <div class="qr-zoom"><i class="key">OK</i> 放大二维码</div>
+                  <div style="margin-top:auto;width:100%">
+                    <span class="t-addr-label">在浏览器手动输入</span>
+                    <div class="qr-url">http://192.168.1.42:8080</div>
+                    <div class="tv-actions">
+                      <button class="abtn" data-f="settings">接收设置</button>
+                      <button class="abtn" data-f="clear">清空记录</button>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="tv-right">
+                  <div class="list-head">
+                    <h2>已接收</h2>
+                    <div class="list-tools">
+                      <span class="list-meta" id="listMeta">0 个文件</span>
+                      <button class="abtn sm" data-f="manage" id="btnManage">管理</button>
+                    </div>
+                  </div>
+                  <ul class="file-list" id="fileList"></ul>
+                  <div class="empty" id="emptyState">
+                    <div class="empty-ic">
+                      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3"
+                        stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">
+                        <path d="M13.8 18.8c-2.6-2.6-4-6.2-3.4-9.2 3.4.2 7.2 2 9.4 4.6M34.2 18.8c2.6-2.6 4-6.2 3.4-9.2-3.4.2-7.2 2-9.4 4.6"/>
+                        <circle cx="24" cy="28" r="14"/>
+                        <ellipse cx="24" cy="32" rx="6.6" ry="4.8"/>
+                        <path d="M21.8 32h.01M26.2 32h.01"/>
+                        <path d="M20.6 23.2h.01M27.4 23.2h.01"/>
+                      </svg>
+                    </div>
+                    <h3>还没有收到文件</h3>
+                    <p>用手机扫描左侧二维码，就能把照片、视频或安装包送进来。</p>
+                  </div>
+                </section>
+              </main>
+
+              <footer class="tv-foot">
+                <div class="hints">
+                  <span class="hint"><i class="key">↑</i><i class="key">↓</i> 选择</span>
+                  <span class="hint"><i class="key">→</i> 打开 · 删除</span>
+                  <span class="hint"><i class="key">OK</i> 执行</span>
+                  <span class="hint"><i class="key">←</i> 返回</span>
+                </div>
+                <div class="manage-bar" id="manageBar">
+                  <button class="abtn sm" data-f="m-all" id="mAll">全选</button>
+                  <button class="abtn sm ghost-danger" data-f="m-del" id="mDel" disabled>删除</button>
+                  <button class="abtn sm" data-f="m-done" id="mDone">完成</button>
+                </div>
+                <div class="heartbeat" aria-hidden="true">
+                  <i style="height:5px"></i><i style="height:8px"></i><i style="height:12px"></i>
+                  <i style="height:9px"></i><i style="height:14px"></i><i style="height:6px"></i>
+                  <i style="height:10px"></i><i style="height:4px"></i>
+                </div>
+              </footer>
+
+              <div class="incoming" id="incoming">
+                <div class="inc-top">
+                  <span class="inc-title">正在接收</span>
+                  <span class="inc-pct" id="incPct">0%</span>
+                </div>
+                <div class="inc-name" id="incName">—</div>
+                <div class="bar"><i id="incBar"></i></div>
+                <div class="inc-sub">
+                  <span id="incSize">—</span>
+                  <span id="incSpeed">—</span>
+                </div>
+              </div>
+
+              <div class="qrbig" id="qrbig">
+                <div class="plate" id="qrbigPlate"></div>
+                <div class="u" id="qrbigUrl">http://192.168.1.42:8080</div>
+                <div class="t">用手机相机扫描 · 按 OK 或返回键收起</div>
+              </div>
+
+              <div class="sheet" id="sheet">
+                <div class="sheet-card">
+                  <h2>接收设置</h2>
+                  <p>这些选项只影响本机，随时可以改回来。</p>
+                  <div class="srow" data-f="s1" data-toggle="1"><span class="k">接收文件前需要四位口令</span>
+                    <span class="v"><span class="tog" data-on="0"><i></i></span></span></div>
+                  <div class="srow" data-f="s2"><span class="k">保存位置</span>
+                    <span class="v">内部存储 / Movies / 猪猪速递</span></div>
+                  <div class="srow" data-f="s3"><span class="k">单文件大小上限</span>
+                    <span class="v">不限制</span></div>
+                  <div class="srow" data-f="s4" data-toggle="1"><span class="k">接收完成后自动打开</span>
+                    <span class="v"><span class="tog" data-on="0"><i></i></span></span></div>
+                  <div class="srow" data-f="s5"><span class="k">接收站地址</span>
+                    <span class="v">192.168.1.42:8080</span></div>
+                  <div class="sheet-foot">
+                    <button class="abtn" data-f="sclose">返回</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="viewer" id="viewer">
+                <div class="vw-ic" id="vIc"></div>
+                <div class="vw-nm" id="vNm">—</div>
+                <div class="vw-meta" id="vMeta">—</div>
+                <div class="vw-note" id="vNote"></div>
+                <div class="vw-btns">
+                  <button class="abtn" data-f="vclose" id="vClose">返回列表</button>
+                  <button class="abtn ghost-danger" data-f="vdel" id="vDel">删除</button>
+                </div>
+              </div>
+
+              <div class="confirm" id="confirm">
+                <div class="confirm-card">
+                  <div class="confirm-hd">
+                    <span class="confirm-ic">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 3.6l9 15.8H3L12 3.6z"/><path d="M12 9.6v4.2M12 16.6h.01"/>
+                      </svg>
+                    </span>
+                    <div>
+                      <h2 id="cTitle">删除文件？</h2>
+                      <p id="cBody">从电视内部存储中永久删除，无法恢复。</p>
+                    </div>
+                  </div>
+                  <div class="confirm-btns">
+                    <button class="abtn" data-f="c-cancel" id="cCancel">取消</button>
+                    <button class="abtn danger" data-f="c-ok" id="cOk">删除</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="devlabel"><i></i>电视端 · 1280 × 720 · 方向键可操作</div>
+    </div>
+
+    <div class="phone-wrap">
+      <div class="phone-bezel">
+        <div class="phone-screen">
+          <div class="phone-canvas t-noir" id="phone">
+            <div class="ph">
+              <div class="grabber">
+                <span>9:41</span>
+                <span class="dots">
+                  <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor" aria-hidden="true">
+                    <rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/>
+                    <rect x="9" y="2.8" width="3" height="8.2" rx="1"/><rect x="13.5" y="0.5" width="3" height="10.5" rx="1"/>
+                  </svg>
+                  <svg width="15" height="11" viewBox="0 0 15 11" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
+                    <path d="M1 3.6a10 10 0 0113 0M3.4 6.3a6.6 6.6 0 018.2 0"/><circle cx="7.5" cy="9.2" r="1" fill="currentColor" stroke="none"/>
+                  </svg>
+                  <svg width="24" height="11" viewBox="0 0 24 11" fill="none" aria-hidden="true">
+                    <rect x="0.5" y="0.5" width="19" height="10" rx="2.6" stroke="currentColor" stroke-opacity="0.45"/>
+                    <rect x="2.4" y="2.4" width="13" height="6.2" rx="1.4" fill="currentColor"/>
+                    <path d="M21.2 3.6v3.8c1-.3 1.5-.9 1.5-1.9s-.5-1.6-1.5-1.9z" fill="currentColor" fill-opacity="0.45"/>
+                  </svg>
+                </span>
+              </div>
+              <div class="ph-head">
+                <div class="ph-conn">
+                  <span class="ph-brand">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                      stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">
+                      <path d="M6.9 9.4c-1.3-1.3-2-3.1-1.7-4.6 1.7.1 3.6 1 4.7 2.3M17.1 9.4c1.3-1.3 2-3.1 1.7-4.6-1.7.1-3.6 1-4.7 2.3"/>
+                      <circle cx="12" cy="14" r="7"/>
+                      <ellipse cx="12" cy="16" rx="3.3" ry="2.4"/>
+                      <path d="M10.9 16h.01M13.1 16h.01"/>
+                    </svg>
+                    <span id="phName">猪猪速递</span>
+                  </span>
+                  <span class="ph-live"><span class="live" style="width:6px;height:6px"></span>已连接</span>
+                </div>
+                <h1>发送到电视</h1>
+                <div class="target">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                    <rect x="2" y="5" width="20" height="13" rx="1.5"/><path d="M8 21h8"/>
+                  </svg>
+                  <b>客厅电视</b> · 192.168.1.42
+                </div>
+              </div>
+
+              <div class="drop" id="drop">
+                <div class="drop-ic">
+                  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M20 6v17m0-17l-5.5 5.5M20 6l5.5 5.5" stroke-linecap="square"/>
+                    <path d="M8 24v6a3 3 0 003 3h18a3 3 0 003-3v-6" stroke-linecap="square"/>
+                  </svg>
+                </div>
+                <b>选择文件或拖进来</b>
+                <span>不限制格式与大小<br>照片、视频、APK 都行</span>
+              </div>
+              <input type="file" id="picker" multiple hidden>
+
+              <div class="ph-body">
+                <div class="sec-t"><h2>传输中</h2><em id="phActive">0</em></div>
+                <div id="txList"></div>
+                <div class="ph-empty" id="phEmpty">还没有开始传输。选好文件后会显示实时进度。</div>
+
+                <div class="sec-t" style="margin-top:28px"><h2>已送达</h2><em id="phDone">0</em></div>
+                <div id="doneList"></div>
+                <div class="ph-empty" id="doneEmpty">文件送达后会立刻出现在电视的「已接收」列表里。</div>
+              </div>
+
+              <div class="ph-foot">
+                <div class="addr">局域网直连<br>不经过任何服务器</div>
+                <button class="ph-btn" id="phMore">再发一批</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="devlabel"><i></i>手机端网页 · 扫码后打开</div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note">
+      <h3>为什么不是一个响应式页面</h3>
+      <p>电视是 3 米外、用方向键的 16:9 横屏，手机是拇指操作、竖屏滚动。两套排版共享同一份状态与 token，但布局、字号、焦点模型完全独立实现——把电视端塞进响应式断点里，两边的体验都会将就。</p>
+      <div class="legend">
+        <i style="background:oklch(0.155 0.018 252)"></i><i style="background:oklch(0.225 0.024 250)"></i>
+        <i style="background:oklch(0.86 0.17 168)"></i>
+      </div>
+    </div>
+    <div class="note">
+      <h3>二维码必须衬浅底</h3>
+      <p>暗色主题下二维码依然放在一块浅色板上。直接反色绘制的二维码在多数手机相机上识别率会掉，这是可用性约束，不是审美选择。四套主题里 <code>--qr-bg</code> 始终是高亮度值。</p>
+    </div>
+    <div class="note">
+      <h3>焦点框是唯一导航语言</h3>
+      <p>电视端没有悬停状态，只有焦点态。所有可交互元素共用一套焦点 token——整行用 <code>--focus-sh</code>，行内小按钮用紧凑的 <code>--focus-sh-sm</code>（否则外发光会被列表的 overflow 裁掉）。切换主题时粗细、颜色、是否发光随之改变，这是四套主题差异最明显的地方。</p>
+    </div>
+    <div class="note">
+      <h3>操作不藏进二级菜单</h3>
+      <p>打开和删除常驻在每一行的文件名后面。删除虽然不可逆，但按钮放在看得见的地方比藏进管理模式更安全：按下去之前用户已经确认过要删哪一个，按下去之后还有一次确认。管理模式仍然保留，负责批量。</p>
+    </div>
+    <div class="note">
+      <h3>落地到 Android TV</h3>
+      <p>电视端用 <code>NanoHTTPD</code>（约 60KB）起 HTTP 服务，<code>ZXing</code> 生成二维码，写入走 <code>MediaStore</code> 或 SAF 申请目录权限。手机端就是服务端内嵌的一个 HTML 页面，用 <code>FormData</code> 分片 POST，进度靠 <code>XMLHttpRequest.upload.onprogress</code> 回传。</p>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var APP_NAME = "猪猪速递";          // ← 换名字只需要改这一处
+  var HOST = "192.168.1.42:8080";
+  var URL_STR = "http://" + HOST;
+
+  var tv = document.getElementById("tv");
+  var phone = document.getElementById("phone");
+  var fileList = document.getElementById("fileList");
+  var emptyState = document.getElementById("emptyState");
+  var listMeta = document.getElementById("listMeta");
+  var incoming = document.getElementById("incoming");
+  var sheet = document.getElementById("sheet");
+  var viewer = document.getElementById("viewer");
+  var txList = document.getElementById("txList");
+  var doneList = document.getElementById("doneList");
+  var stage = document.getElementById("stage");
+  var confirmEl = document.getElementById("confirm");
+  var btnManage = document.getElementById("btnManage");
+  var mAll = document.getElementById("mAll");
+  var mDel = document.getElementById("mDel");
+
+  var state = { files: [], transfers: [], focus: "qr", sheetOpen: false, viewerOpen: false,
+                viewerId: null, qrOpen: false,
+                manage: false, sel: {}, confirmOpen: false, confirmKind: null, confirmIds: [] };
+
+  /* ---------- 图标 ---------- */
+  var ICONS = {
+    video:'<path d="M3 6.5A1.5 1.5 0 014.5 5h9A1.5 1.5 0 0115 6.5v11A1.5 1.5 0 0113.5 19h-9A1.5 1.5 0 013 17.5v-11z"/><path d="M15 10l6-3.2v10.4L15 14"/>',
+    image:'<rect x="3" y="5" width="18" height="14" rx="1.5"/><circle cx="8.2" cy="10" r="1.6"/><path d="M4 17l5-5 4 4 2.5-2.5L20 17"/>',
+    apk:'<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/>',
+    audio:'<path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/>',
+    doc:'<path d="M6 3h7l5 5v13H6V3z"/><path d="M13 3v5h5"/><path d="M9 13h6M9 17h4"/>',
+    other:'<path d="M4 7.5A1.5 1.5 0 015.5 6h4l2 2.5h7A1.5 1.5 0 0120 10v8a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 18V7.5z"/>'
+  };
+
+  function kindOf(name){
+    var e = (name.split(".").pop()||"").toLowerCase();
+    if (/^(mp4|mkv|mov|avi|webm|ts|m4v|flv)$/.test(e)) return "video";
+    if (/^(jpg|jpeg|png|gif|webp|heic|bmp|avif)$/.test(e)) return "image";
+    if (e === "apk" || e === "xapk" || e === "apks") return "apk";
+    if (/^(mp3|flac|wav|m4a|aac|ogg)$/.test(e)) return "audio";
+    if (/^(pdf|doc|docx|xls|xlsx|ppt|pptx|txt|md|csv)$/.test(e)) return "doc";
+    return "other";
+  }
+  function svgFor(kind, size){
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" '+
+      'stroke-linecap="square" stroke-linejoin="miter">'+ICONS[kind]+'</svg>';
+  }
+  function fmtSize(b){
+    if (!b || b < 1024) return (b||0) + " B";
+    var u = ["KB","MB","GB","TB"], i = -1;
+    do { b /= 1024; i++; } while (b >= 1024 && i < u.length-1);
+    return (b < 10 ? b.toFixed(1) : Math.round(b)) + " " + u[i];
+  }
+
+  /* ---------- 二维码 ---------- */
+  function renderQR(){
+    var box = document.getElementById("qr");
+    var big = document.getElementById("qrbigPlate");
+    var html;
+    try {
+      var qr = qrcode(0, "M");
+      qr.addData(URL_STR);
+      qr.make();
+      var n = qr.getModuleCount(), d = "";
+      for (var r = 0; r < n; r++) for (var c = 0; c < n; c++)
+        if (qr.isDark(r, c)) d += "M" + c + " " + r + "h1v1h-1z";
+      html = '<svg viewBox="0 0 ' + n + ' ' + n + '" shape-rendering="crispEdges" '+
+        'role="img" aria-label="扫码打开上传页面"><path d="' + d + '" fill="currentColor"/></svg>';
+    } catch (e) {
+      html = '<div style="font:13px var(--fb);display:grid;place-items:center;'+
+        'text-align:center;height:100%">二维码<br>' + HOST + '</div>';
+    }
+    box.innerHTML = html;
+    if (big) big.innerHTML = html;
+    var u = document.getElementById("qrbigUrl");
+    if (u) u.textContent = URL_STR;
+  }
+
+  /* ---------- 渲染：电视列表 ---------- */
+  var CHK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" ' +
+    'stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5L19.5 7"/></svg>';
+
+  function totalSize(){ return state.files.reduce(function(s,f){ return s + f.size; }, 0); }
+  function selCount(){ return state.files.filter(function(f){ return state.sel[f.id]; }).length; }
+  function selSize(){
+    return state.files.reduce(function(s,f){ return s + (state.sel[f.id] ? f.size : 0); }, 0);
+  }
+
+  function renderList(){
+    fileList.innerHTML = "";
+    var total = totalSize();
+    var n = state.files.length;
+
+    if (state.manage){
+      var c = selCount();
+      listMeta.textContent = c
+        ? "已选 " + c + " 个 · " + fmtSize(selSize())
+        : "共 " + n + " 个 · " + fmtSize(total);
+    } else {
+      listMeta.textContent = n ? n + " 个文件 · " + fmtSize(total) : "0 个文件";
+    }
+
+    btnManage.style.display = n ? "" : "none";
+
+    if (!n){
+      emptyState.style.display = "flex";
+      fileList.style.display = "none";
+    } else {
+      emptyState.style.display = "none";
+      fileList.style.display = "block";
+      state.files.forEach(function(f){
+        var li = document.createElement("li");
+        var isSel = !!state.sel[f.id];
+        var here = "f-" + f.id, op = "o-" + f.id, del = "x-" + f.id;
+        li.className = "row" + (state.focus === here ? " focused" : "") +
+                       (state.focus === op || state.focus === del ? " active" : "") +
+                       (isSel ? " sel" : "");
+        li.dataset.f = here;
+        li.tabIndex = -1;
+        li.innerHTML =
+          (state.manage
+            ? '<span class="chk">' + CHK + '</span>'
+            : '<span class="ic">' + svgFor(f.kind) + '</span>') +
+          '<span class="mid"><span class="nm">' + escapeHTML(f.name) + '</span>' +
+          '<span class="sub">' + f.time + ' · 来自手机</span></span>' +
+          '<span class="sz">' + fmtSize(f.size) + '</span>' +
+          '<button class="ract" type="button" data-f="' + op + '">打开</button>' +
+          '<button class="ract rdel" type="button" data-f="' + del + '">删除</button>';
+
+        li.addEventListener("click", function(ev){
+          if (ev.target.closest && ev.target.closest(".ract")) return;  /* 行内按钮自己处理 */
+          focusOn(here);
+          if (state.manage) toggleSel(f.id); else openViewer(f.id);
+        });
+        /* 行内按钮要吃掉冒泡，否则点删除会顺带触发整行「打开」 */
+        li.querySelector('button[data-f="' + op + '"]').addEventListener("click", function(ev){
+          ev.stopPropagation();
+          focusOn(op);
+          openViewer(f.id);
+        });
+        li.querySelector('button[data-f="' + del + '"]').addEventListener("click", function(ev){
+          ev.stopPropagation();
+          focusOn(del);
+          openConfirm("delete", [f.id]);
+        });
+        fileList.appendChild(li);
+      });
+    }
+
+    /* 底部操作条跟着选择状态走 */
+    var allSel = n > 0 && selCount() === n;
+    mAll.textContent = allSel ? "取消全选" : "全选";
+    mDel.textContent = selCount() ? "删除 " + selCount() + " 个" : "删除";
+    if (selCount()) mDel.removeAttribute("disabled");
+    else mDel.setAttribute("disabled", "");
+
+    /* 焦点不能停在刚被禁用的按钮上 */
+    if (state.focus === "m-del" && mDel.hasAttribute("disabled")){
+      state.focus = "m-all"; focusOn("m-all");
+    }
+  }
+
+  function escapeHTML(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  /* ---------- 焦点模型 ---------- */
+  /* 显式导航图优先：遥控器导航按「视觉顺序」而非「几何最近」。
+     几何算法在纵向堆叠的按钮之间会跳错，也不处理边界停靠。 */
+  function navMap(){
+    var files = state.files;
+    var key = function(i){ return files[i] ? "f-" + files[i].id : null; };
+    var first = key(0), last = key(files.length - 1);
+    var delOff = mDel.hasAttribute("disabled");
+    var map = {};
+    function set(k, o){ map[k] = o; }
+
+    if (state.confirmOpen){
+      set("c-cancel", { left:null, right:"c-ok" });
+      set("c-ok", { left:"c-cancel", right:null });
+      return map;
+    }
+
+    if (state.viewerOpen){
+      set("vclose", { left:null, right:"vdel" });
+      set("vdel", { left:"vclose", right:null });
+      return map;
+    }
+
+    if (state.manage){
+      /* 管理模式：纵向在列表内移动，右键一键跳到操作条。
+         遥控器没有长按或快捷键，列表一长「按到末尾再下」成本太高，所以把右键定义为跳转。 */
+      files.forEach(function(f, i){
+        var o = {};
+        o.up = i > 0 ? key(i-1) : null;
+        o.down = i < files.length - 1 ? key(i+1) : "m-all";
+        o.left = null; o.right = "m-all";
+        set("f-" + f.id, o);
+      });
+      var back = (state.lastRow && elementFor(state.lastRow)) ? state.lastRow : first;
+      set("m-all", { up:last, down:null, left: back, right: delOff ? "m-done" : "m-del" });
+      set("m-del", { up:last, down:null, left:"m-all", right:"m-done" });
+      set("m-done", { up:last, down:null, left: delOff ? "m-all" : "m-del", right:null });
+      return map;
+    }
+
+    set("qr", { down:"settings", right: first || null });
+    set("settings", { up:"qr", down:"clear", right: first || null });
+    set("clear", { up:"settings", right: files[1] ? key(1) : (first || null) });
+
+    if (first) set("manage", { left:"qr", down:first });
+
+    /* 每行三个焦点位：整行 / 打开 / 删除。左右在行内推进，上下在同一列里换行，
+       这样「打开第 5 个」和「删第 5 个」的按键次数都是可预期的。 */
+    files.forEach(function(f, i){
+      var here = "f-" + f.id, op = "o-" + f.id, del = "x-" + f.id;
+      var prev = files[i-1], next = files[i+1];
+      set(here, {
+        up: prev ? "f-" + prev.id : "manage",
+        down: next ? "f-" + next.id : null,
+        left: i % 2 === 0 ? "settings" : "clear",
+        right: op
+      });
+      set(op, {
+        up: prev ? "o-" + prev.id : "manage",
+        down: next ? "o-" + next.id : null,
+        left: here, right: del
+      });
+      set(del, {
+        up: prev ? "x-" + prev.id : "manage",
+        down: next ? "x-" + next.id : null,
+        left: op, right: null
+      });
+    });
+
+    if (state.sheetOpen){
+      var s = ["s1","s2","s3","s4","s5","sclose"];
+      s.forEach(function(k, i){
+        var o = {};
+        if (i > 0) o.up = s[i-1];
+        if (i < s.length - 1) o.down = s[i+1];
+        set(k, o);
+      });
+    }
+    return map;
+  }
+
+  function focusables(){
+    if (state.qrOpen) return [];
+    if (state.confirmOpen) return collect(confirmEl);
+    var scope = state.viewerOpen ? viewer : (state.sheetOpen ? sheet : tv.querySelector(".tv"));
+    return collect(scope);
+  }
+
+  function collect(scope){
+    var nodes = scope.querySelectorAll("[data-f]");
+    var out = [];
+    for (var i = 0; i < nodes.length; i++){
+      var el = nodes[i];
+      if (el.hasAttribute("disabled")) continue;
+      var r = el.getBoundingClientRect();
+      if (r.width === 0 && r.height === 0) continue;
+      out.push(el);
+    }
+    return out;
+  }
+
+  function focusOn(key){
+    state.focus = key;
+    if (key && key.indexOf("f-") === 0) state.lastRow = key;   /* 记住来源行，操作条左键可回原位 */
+    var all = tv.querySelectorAll("[data-f]");
+    for (var i = 0; i < all.length; i++){
+      all[i].classList.toggle("focused", all[i].dataset.f === key);
+    }
+    /* 焦点落在行内按钮上时，把所属行也标记出来 */
+    var lit = tv.querySelectorAll(".row.active");
+    for (var j = 0; j < lit.length; j++) lit[j].classList.remove("active");
+    var el = elementFor(key);
+    var row = el && el.closest ? el.closest(".row") : null;
+    if (row && row !== el) row.classList.add("active");
+  }
+
+  function elementFor(key){
+    var all = tv.querySelectorAll("[data-f]");
+    for (var i = 0; i < all.length; i++) if (all[i].dataset.f === key) return all[i];
+    return null;
+  }
+
+  function move(dir){
+    var items = focusables();
+    if (!items.length) return;
+
+    if (!elementFor(state.focus)){
+      focusOn(items[0].dataset.f);
+      return;
+    }
+
+    var map = navMap();
+    var here = map[state.focus];
+    var target = here && here[dir];
+
+    if (target && elementFor(target)){
+      focusOn(target);
+      var el = elementFor(target);
+      if (el.scrollIntoView) el.scrollIntoView({block:"nearest"});
+      return;
+    }
+
+    if (target === null || (here && Object.prototype.hasOwnProperty.call(here, dir))){
+      return;   /* 显式声明了边界，停住不动 */
+    }
+
+    geometricMove(dir, items);
+  }
+
+  function geometricMove(dir, items){
+    var cur = elementFor(state.focus);
+    var cr = cur.getBoundingClientRect();
+    var cx = cr.left + cr.width/2, cy = cr.top + cr.height/2;
+    var best = null, bestScore = Infinity;
+
+    for (var j = 0; j < items.length; j++){
+      var el = items[j];
+      if (el === cur) continue;
+      var r = el.getBoundingClientRect();
+      var dx = (r.left + r.width/2) - cx;
+      var dy = (r.top + r.height/2) - cy;
+      var primary, secondary;
+      if (dir === "left"){ primary = -dx; secondary = Math.abs(dy); }
+      else if (dir === "right"){ primary = dx; secondary = Math.abs(dy); }
+      else if (dir === "up"){ primary = -dy; secondary = Math.abs(dx); }
+      else { primary = dy; secondary = Math.abs(dx); }
+      if (primary < 6) continue;
+      var score = primary + secondary * 2.4;
+      if (score < bestScore){ bestScore = score; best = el; }
+    }
+    if (best){
+      focusOn(best.dataset.f);
+      if (best.scrollIntoView) best.scrollIntoView({block:"nearest"});
+    }
+  }
+
+  function activate(){
+    if (state.qrOpen){ closeQR(); return; }
+
+    var scope = state.confirmOpen ? confirmEl
+              : state.viewerOpen ? viewer
+              : state.sheetOpen ? sheet
+              : tv.querySelector(".tv");
+    var el = null;
+    var all = scope.querySelectorAll("[data-f]");
+    for (var i = 0; i < all.length; i++) if (all[i].dataset.f === state.focus) el = all[i];
+    if (!el) return;
+
+    var f = el.dataset.f;
+
+    /* 确认框最优先，且只有这两个按钮可操作 */
+    if (f === "c-cancel"){ closeConfirm(); return; }
+    if (f === "c-ok"){ doConfirm(); return; }
+
+    if (f === "vclose"){ closeViewer(); return; }
+    if (f === "vdel"){
+      var vid = state.viewerId;
+      closeViewer();
+      openConfirm("delete", [vid]);
+      return;
+    }
+    if (el.classList.contains("srow")){
+      if (el.dataset.toggle){
+        var t = el.querySelector(".tog");
+        t.dataset.on = t.dataset.on === "1" ? "0" : "1";
+        if (el.dataset.f === "s1") el.classList.add("shake");
+      }
+      return;
+    }
+    if (f === "settings"){ openSheet(); return; }
+    if (f === "sclose"){ closeSheet(); return; }
+    if (f === "clear"){ clearAll(); return; }
+    if (f === "manage"){ enterManage(); return; }
+    if (f === "m-all"){ toggleAll(); return; }
+    if (f === "m-del"){
+      if (selCount()){
+        openConfirm("delete", state.files
+          .filter(function(x){ return state.sel[x.id]; })
+          .map(function(x){ return x.id; }));
+      }
+      return;
+    }
+    if (f === "m-done"){ exitManage(); return; }
+    if (f === "qr"){ openQR(); return; }
+    if (f.indexOf("o-") === 0){ openViewer(f.slice(2)); return; }
+    if (f.indexOf("x-") === 0){ openConfirm("delete", [f.slice(2)]); return; }
+    if (f.indexOf("f-") === 0){
+      if (state.manage) toggleSel(f.slice(2));
+      else openViewer(f.slice(2));
+    }
+  }
+
+  /* ---------- 管理已接收文件 ---------- */
+  function enterManage(){
+    if (!state.files.length) return;
+    state.manage = true; state.sel = {};
+    tv.dataset.manage = "1";
+    renderList();
+    state.focus = "f-" + state.files[0].id;
+    focusOn(state.focus);
+  }
+
+  function exitManage(){
+    state.manage = false; state.sel = {};
+    delete tv.dataset.manage;
+    renderList();
+    var t = state.files.length ? "manage" : "settings";
+    state.focus = t; focusOn(t);
+  }
+
+  function toggleSel(id){
+    id = String(id);
+    if (state.sel[id]) delete state.sel[id]; else state.sel[id] = true;
+    state.focus = "f-" + id;
+    renderList();
+    focusOn(state.focus);
+  }
+
+  function toggleAll(){
+    var all = state.files.length > 0 && selCount() === state.files.length;
+    state.sel = {};
+    if (!all) state.files.forEach(function(f){ state.sel[f.id] = true; });
+    renderList();
+    focusOn(state.focus);
+  }
+
+  /* 删除确认：不可逆操作必须显式二次确认，且默认焦点停在「取消」 */
+  function openConfirm(kind, ids){
+    state.confirmBack = state.focus;
+    state.confirmOpen = true;
+    state.confirmKind = kind;
+    state.confirmIds = (ids || []).map(String);
+
+    var tEl = document.getElementById("cTitle");
+    var bEl = document.getElementById("cBody");
+    var oEl = document.getElementById("cOk");
+
+    if (kind === "clear"){
+      tEl.textContent = "清空全部 " + state.files.length + " 个文件？";
+      bEl.innerHTML = "这会删除电视上所有已接收的文件，共 " +
+        fmtSize(totalSize()) + "，且无法恢复。";
+      oEl.textContent = "全部删除";
+    } else {
+      var picked = state.files.filter(function(f){
+        return state.confirmIds.indexOf(String(f.id)) >= 0;
+      });
+      var sz = picked.reduce(function(s,f){ return s + f.size; }, 0);
+      if (picked.length === 1){
+        tEl.textContent = "删除这个文件？";
+        bEl.innerHTML = "「<b>" + escapeHTML(picked[0].name) + "</b>」将从电视内部存储中永久删除。";
+      } else {
+        tEl.textContent = "删除 " + picked.length + " 个文件？";
+        bEl.innerHTML = "共 " + fmtSize(sz) + "，将从电视内部存储中永久删除。";
+      }
+      oEl.textContent = "删除";
+    }
+
+    confirmEl.classList.add("on");
+    state.focus = "c-cancel";
+    focusOn("c-cancel");
+  }
+
+  function closeConfirm(){
+    state.confirmOpen = false;
+    confirmEl.classList.remove("on");
+    var back = state.confirmBack || "settings";
+    if (!elementFor(back)) back = state.files.length ? "f-" + state.files[0].id : "settings";
+    state.focus = back; focusOn(back);
+  }
+
+  function doConfirm(){
+    var kind = state.confirmKind;
+    var ids = state.confirmIds.slice();
+    state.confirmOpen = false;
+    confirmEl.classList.remove("on");
+
+    if (kind === "clear"){
+      state.files = []; state.transfers = [];
+      state.manage = false; state.sel = {};
+      delete tv.dataset.manage;
+      renderList(); renderTransfers();
+      state.focus = "settings"; focusOn("settings");
+      return;
+    }
+
+    var firstIdx = -1;
+    state.files = state.files.filter(function(f, i){
+      if (ids.indexOf(String(f.id)) >= 0){
+        if (firstIdx < 0) firstIdx = i;
+        return false;
+      }
+      return true;
+    });
+
+    var wasManage = state.manage;
+    state.manage = false; state.sel = {};
+    delete tv.dataset.manage;
+    state.viewerOpen = false; viewer.classList.remove("on");
+    renderList(); renderTransfers();
+
+    var t;
+    if (!state.files.length) t = "settings";
+    else if (wasManage) t = "manage";
+    else t = "f-" + state.files[Math.min(Math.max(firstIdx, 0), state.files.length - 1)].id;
+    state.focus = t; focusOn(t);
+  }
+
+  /* ---------- 浮层 ---------- */
+  function openSheet(){
+    state.sheetOpen = true; sheet.classList.add("on");
+    state.focus = "s1"; focusOn("s1");
+  }
+  function closeSheet(){
+    state.sheetOpen = false; sheet.classList.remove("on");
+    state.focus = "settings"; focusOn("settings");
+  }
+  /* ---------- 打开 ---------- */
+  /* 「打开」= 把文件交给系统里对应的应用。电视上没有应用能处理这个格式，
+     也是真实会发生的情况，所以这条给的是可执行的下一步，而不是一句「失败」。 */
+  var OPEN_MSG = {
+    video: ["正在交给系统播放器打开", "回到列表后，接收站照常工作。"],
+    audio: ["正在交给音乐应用播放", "回到列表后，接收站照常工作。"],
+    image: ["正在交给相册打开", "回到列表后，接收站照常工作。"],
+    apk:   ["正在交给系统安装器", "电视上还需要再点一次「安装」确认，安装包才会真正装进系统。"],
+    doc:   ["正在交给文档查看器打开", "回到列表后，接收站照常工作。"],
+    other: ["这台电视上没有能打开此格式的应用", "可以先删除腾出空间，或到电视的「文件管理」里查看。"]
+  };
+
+  function openViewer(id){
+    id = String(id);
+    var f = state.files.filter(function(x){ return String(x.id) === id; })[0];
+    if (!f) return;
+    state.viewerOpen = true; state.viewerId = id;
+    document.getElementById("vIc").innerHTML = svgFor(f.kind);
+    document.getElementById("vNm").textContent = f.name;
+    document.getElementById("vMeta").textContent =
+      fmtSize(f.size) + " · " + f.time + " 收到 · " + f.kind.toUpperCase();
+    var msg = OPEN_MSG[f.kind] || OPEN_MSG.other;
+    var note = document.getElementById("vNote");
+    note.className = "vw-note" + (f.kind === "other" ? " alert" : "");
+    note.innerHTML = "<b>" + msg[0] + "</b>" + msg[1];
+    viewer.classList.add("on");
+    focusOn(null); focusOn("vclose");
+  }
+
+  function closeViewer(){
+    state.viewerOpen = false; viewer.classList.remove("on");
+    var back = "f-" + state.viewerId;
+    if (!elementFor(back)) back = state.files.length ? "f-" + state.files[0].id : "settings";
+    state.focus = back; focusOn(back);
+  }
+
+  /* ---------- 手机端渲染 ---------- */
+  function renderTransfers(){
+    var active = state.transfers.filter(function(t){ return !t.done; });
+    var done = state.transfers.filter(function(t){ return t.done; });
+    document.getElementById("phActive").textContent = active.length + " 个";
+    document.getElementById("phDone").textContent = done.length + " 个";
+    document.getElementById("phEmpty").style.display = active.length ? "none" : "block";
+    document.getElementById("doneEmpty").style.display = done.length ? "none" : "block";
+
+    txList.innerHTML = active.map(function(t){
+      return '<div class="tx" data-t="'+t.id+'"><span class="ic">'+svgFor(t.kind)+'</span>'+
+        '<div class="body"><div class="nm">'+escapeHTML(t.name)+'</div>'+
+        '<div class="sub">'+fmtSize(t.size)+' · <span class="pct">'+Math.round(t.p)+'%</span></div>'+
+        '<div class="mini"><i style="width:'+t.p+'%"></i></div></div></div>';
+    }).join("");
+
+    var TICK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '+
+      'stroke-linecap="square"><path d="M4 12.5l5 5L20 6.5"/></svg>';
+
+    doneList.innerHTML = done.slice().reverse().map(function(t){
+      return '<div class="tx"><span class="ic">'+svgFor(t.kind)+'</span>'+
+        '<div class="body"><div class="nm">'+escapeHTML(t.name)+'</div>'+
+        '<div class="sub">'+fmtSize(t.size)+' · 已送达电视</div></div>'+
+        '<span class="tick">'+TICK+'</span></div>';
+    }).join("");
+  }
+
+  /* ---------- 传输模拟 ---------- */
+  var seq = 0;
+  function enqueue(files){
+    var arr = Array.prototype.slice.call(files);
+    if (!arr.length) return;
+    arr.forEach(function(file){
+      var t = {
+        id: ++seq,
+        name: file.name || ("文件 " + seq),
+        size: file.size || Math.round(200000 + Math.random()*40000000),
+        kind: kindOf(file.name || ""),
+        p: 0, done: false
+      };
+      state.transfers.push(t);
+    });
+    renderTransfers();
+    pump();
+  }
+
+  var pumping = false;
+  function pump(){
+    if (pumping) return;
+    var next = state.transfers.filter(function(t){ return !t.done; })[0];
+    if (!next){
+      pumping = false;
+      incoming.classList.remove("on");
+      renderTransfers();
+      return;
+    }
+    pumping = true;
+    incoming.classList.add("on");
+    document.getElementById("incName").textContent = next.name;
+    document.getElementById("incSize").textContent = fmtSize(next.size);
+    document.getElementById("incSpeed").textContent = "—";
+    varyHeights();
+
+    var dur = 1500 + Math.min(2600, next.size / 900000);
+    var start = performance.now();
+
+    function step(now){
+      var elapsed = Math.max(0, now - start);
+      var k = Math.min(1, elapsed / dur);
+      var eased = Math.max(0, Math.min(1, 1 - Math.pow(1 - k, 2.2)));
+      next.p = eased * 100;
+
+      var bar = document.getElementById("incBar");
+      var pct = document.getElementById("incPct");
+      bar.style.width = next.p + "%";
+      pct.textContent = Math.round(next.p) + "%";
+      document.getElementById("incSpeed").textContent =
+        (k < 0.99 && elapsed > 140)
+          ? (next.size * eased / (elapsed / 1000) / 1048576).toFixed(1) + " MB/s"
+          : (k < 0.99 ? "已连接" : "校验中");
+
+      var mine = txList.querySelector('[data-t="'+next.id+'"]');
+      if (mine){
+        mine.querySelector(".pct").textContent = Math.round(next.p) + "%";
+        mine.querySelector(".mini i").style.width = next.p + "%";
+      }
+
+      if (k < 1) requestAnimationFrame(step);
+      else {
+        next.done = true; next.p = 100;
+        state.files.unshift({
+          id: next.id, name: next.name, size: next.size,
+          kind: next.kind, time: "刚刚"
+        });
+        renderList(); renderTransfers();
+        pumping = false;
+        setTimeout(pump, 320);
+      }
+    }
+    requestAnimationFrame(step);
+  }
+
+  function varyHeights(){
+    var bars = document.querySelectorAll(".heartbeat i");
+    for (var i = 0; i < bars.length; i++){
+      bars[i].style.height = (3 + Math.random()*11).toFixed(0) + "px";
+    }
+  }
+
+  function clearAll(){
+    if (!state.files.length) return;
+    openConfirm("clear");
+  }
+
+  function pulse(){
+    var box = document.getElementById("qr");
+    box.style.transition = "none";
+    box.style.transform = "scale(0.985)";
+    requestAnimationFrame(function(){
+      box.style.transition = "transform .28s cubic-bezier(.16,1,.3,1)";
+      box.style.transform = "scale(1)";
+    });
+  }
+
+  function openQR(){
+    state.qrOpen = true;
+    document.getElementById("qrbig").classList.add("on");
+    state.focus = "qclose";
+    focusOn(null);
+    pulse();
+  }
+  function closeQR(){
+    state.qrOpen = false;
+    document.getElementById("qrbig").classList.remove("on");
+    state.focus = "qr"; focusOn("qr");
+  }
+
+  /* ---------- 手机交互 ---------- */
+  var drop = document.getElementById("drop");
+  var picker = document.getElementById("picker");
+  drop.addEventListener("click", function(){ picker.click(); });
+  document.getElementById("phMore").addEventListener("click", function(){ picker.click(); });
+  picker.addEventListener("change", function(e){
+    if (e.target.files && e.target.files.length) enqueue(e.target.files);
+    picker.value = "";
+  });
+  ["dragenter","dragover"].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add("over"); });
+  });
+  ["dragleave","drop"].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove("over"); });
+  });
+  drop.addEventListener("drop", function(e){
+    if (e.dataTransfer && e.dataTransfer.files.length) enqueue(e.dataTransfer.files);
+  });
+
+  /* ---------- 键盘 ---------- */
+  document.addEventListener("keydown", function(e){
+    var k = e.key;
+    if (k === "Escape"){
+      if (state.confirmOpen) { closeConfirm(); e.preventDefault(); return; }
+      if (state.qrOpen) { closeQR(); e.preventDefault(); return; }
+      if (state.viewerOpen) { closeViewer(); e.preventDefault(); return; }
+      if (state.sheetOpen) { closeSheet(); e.preventDefault(); return; }
+      if (state.manage) { exitManage(); e.preventDefault(); return; }
+    }
+    var map = { ArrowLeft:"left", ArrowRight:"right", ArrowUp:"up", ArrowDown:"down" };
+    if (map[k]){ move(map[k]); e.preventDefault(); return; }
+    if (k === "Enter" || k === " "){ activate(); e.preventDefault(); }
+  });
+
+  /* ---------- 主题 ---------- */
+  var btns = document.querySelectorAll(".tbtn");
+  function setTheme(name){
+    tv.className = "tv-canvas t-" + name;
+    phone.className = "phone-canvas t-" + name;
+    for (var i = 0; i < btns.length; i++){
+      btns[i].setAttribute("aria-pressed", btns[i].dataset.theme === name ? "true" : "false");
+    }
+    try { localStorage.setItem("zhuzhu-theme", name); } catch(_){}
+    requestAnimationFrame(fit);
+  }
+  for (var i = 0; i < btns.length; i++){
+    btns[i].addEventListener("click", function(){ setTheme(this.dataset.theme); });
+  }
+
+  /* ---------- 适配缩放 ---------- */
+  function fit(){
+    var tvScreen = document.querySelector(".tv-screen");
+    if (tvScreen && tvScreen.clientWidth){
+      tv.style.transform = "scale(" + (tvScreen.clientWidth / 1280) + ")";
+    }
+    var phScreen = document.querySelector(".phone-screen");
+    if (phScreen && phScreen.clientWidth){
+      phone.style.transform = "scale(" + (phScreen.clientWidth / 390) + ")";
+    }
+  }
+  window.addEventListener("resize", fit);
+  if (window.ResizeObserver){
+    var ro = new ResizeObserver(fit);
+    ro.observe(document.querySelector(".tv-screen"));
+    ro.observe(document.querySelector(".phone-screen"));
+  }
+
+  /* ---------- 顶栏按钮 ---------- */
+  document.getElementById("btnSolo").addEventListener("click", function(){
+    var on = this.getAttribute("aria-pressed") === "true";
+    this.setAttribute("aria-pressed", on ? "false" : "true");
+    stage.classList.toggle("solo", !on);
+    setTimeout(fit, 30);
+  });
+  document.getElementById("btnSheet").addEventListener("click", function(){
+    if (state.sheetOpen) closeSheet(); else openSheet();
+  });
+  document.getElementById("btnReset").addEventListener("click", clearAll);
+
+  /* ---------- 启动 ---------- */
+  document.getElementById("appName").textContent = APP_NAME;
+  document.getElementById("tvName").textContent = APP_NAME;
+  document.getElementById("phName").textContent = APP_NAME;
+
+  var saved = null;
+  try { saved = localStorage.getItem("zhuzhu-theme"); } catch(_){}
+  var qs = new URLSearchParams(location.search).get("theme");
+  if (qs && ["noir","paper","grid","term"].indexOf(qs) >= 0) saved = qs;
+  setTheme(saved || "noir");
+
+  renderQR();
+  renderList();
+  renderTransfers();
+
+  // 预置四条演示记录，让列表与管理状态都可见
+  state.files = [
+    { id: 901, name: "海边日落_2026.mp4", size: 428 * 1048576, kind: "video", time: "12 分钟前" },
+    { id: 902, name: "家庭聚会_合影.jpg", size: 6.4 * 1048576, kind: "image", time: "34 分钟前" },
+    { id: 903, name: "猪猪速递_安装包.apk", size: 18.2 * 1048576, kind: "apk", time: "1 小时前" },
+    { id: 904, name: "通勤歌单.mp3", size: 42.6 * 1048576, kind: "audio", time: "2 小时前" }
+  ];
+  renderList();
+  focusOn("qr");
+
+  requestAnimationFrame(function(){ fit(); requestAnimationFrame(fit); });
+})();
+</script>
+</body>
+</html>

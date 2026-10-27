@@ -1,0 +1,24 @@
+# 忽略构建产物
+build/
+.gradle/
+.kotlin/
+captures/
+.cxx/
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# 本机 SDK 路径，因人而异，不能提交
+local.properties
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+
+# macOS
+.DS_Store
+._*

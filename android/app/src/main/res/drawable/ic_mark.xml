@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 猪猪速递的标记：只有它承担品牌，不外溢。
+     24×24 视图；描边统一填白，运行时用 tint 着成主题色。
+     22dp 以下不画眼睛（原型里验过，太小会糊成一团），所以这里也只保留鼻孔。 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <path
+        android:pathData="M6.9,9.4 C5.6,8.1 4.9,6.3 5.2,4.8 C6.9,4.9 8.8,5.8 9.9,7.1 M17.1,9.4 C18.4,8.1 19.1,6.3 18.8,4.8 C17.1,4.9 15.2,5.8 14.1,7.1"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="1.5" />
+    <path
+        android:pathData="M5,14 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineJoin="round"
+        android:strokeWidth="1.5" />
+    <path
+        android:pathData="M8.7,16 a3.3,2.4 0 1,0 6.6,0 a3.3,2.4 0 1,0 -6.6,0"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineJoin="round"
+        android:strokeWidth="1.5" />
+    <path
+        android:pathData="M10.9,16 L11.4,16 M13.1,16 L13.6,16"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round"
+        android:strokeWidth="1.5" />
+</vector>

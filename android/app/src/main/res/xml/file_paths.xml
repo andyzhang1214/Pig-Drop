@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- 交给系统播放器/安装器时用 FileProvider 授权，不暴露 file:// 路径 -->
+    <external-files-path
+        name="received_ext"
+        path="猪猪速递/" />
+    <external-path
+        name="downloads"
+        path="Download/猪猪速递/" />
+    <files-path
+        name="received"
+        path="received/" />
+</paths>

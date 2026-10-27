@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070D14">
+<title>{{BRAND}} · 传文件到电视</title>
+<style>
+/* 主题变量由电视端注入：在电视上换主题，这里立刻跟着变 */
+{{CSS}}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+  font-size:15px;line-height:1.5;
+  min-height:100vh;padding:18px 16px calc(28px + env(safe-area-inset-bottom));
+  display:flex;justify-content:center;
+}
+.wrap{width:100%;max-width:520px}
+
+/* ---------- 头部 ---------- */
+header{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+.brand{display:flex;align-items:center;gap:9px}
+.brand svg{width:26px;height:26px;color:var(--accent);flex:none}
+.brand b{
+  font-size:20px;letter-spacing:.04em;font-weight:700;
+  font-family:"PingFang SC","Noto Sans SC",sans-serif;
+}
+.conn{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink3);
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+.conn .url{color:var(--ink2)}
+
+/* ---------- 选择区 ---------- */
+.picker{
+  border:1px dashed var(--line2);border-radius:var(--radius);
+  background:var(--surface);padding:24px 18px 20px;text-align:center;
+  transition:border-color .16s,background .16s;
+}
+.picker.drag{border-color:var(--accent);background:var(--surface2)}
+.picker svg.plus{width:34px;height:34px;color:var(--accent);opacity:.9;display:block;margin:0 auto 12px}
+.pick-t{font-size:17px;font-weight:600;letter-spacing:.01em}
+.pick-s{font-size:12.5px;color:var(--ink3);margin-top:5px}
+.pick-btn{
+  margin-top:16px;appearance:none;border:1px solid var(--accent);
+  background:var(--accent);color:var(--accent-ink);
+  font-family:inherit;font-size:15px;font-weight:700;letter-spacing:.03em;
+  padding:12px 26px;border-radius:calc(var(--radius) * .8);
+  min-height:46px;cursor:pointer;
+}
+.pick-btn:active{transform:translateY(1px);filter:brightness(.94)}
+
+/* ---------- 队列 ---------- */
+.queue{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:9px}
+.q{
+  background:var(--surface);border:1px solid var(--line);border-radius:calc(var(--radius) * .8);
+  padding:12px 14px;display:flex;flex-direction:column;gap:9px;
+}
+.q-top{display:flex;align-items:baseline;gap:10px}
+.q-name{flex:1;min-width:0;font-size:14px;font-weight:600;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.q-size{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:11.5px;color:var(--ink3);flex:none}
+.q-bar{height:4px;border-radius:2px;background:var(--line);overflow:hidden}
+.q-fill{height:100%;width:0;background:var(--accent);border-radius:2px;
+  transition:width .18s linear}
+.q.done .q-fill{background:var(--accent2)}
+.q.err .q-fill{background:var(--danger)}
+.q-state{font-size:12px;color:var(--ink3);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.q.done .q-state{color:var(--accent2)}
+.q.err .q-state{color:var(--danger)}
+
+/* ---------- 最近送达 ---------- */
+section.recent{margin-top:26px}
+section.recent h2{
+  margin:0 0 10px;font-size:12px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink3);
+  display:flex;justify-content:space-between;gap:12px;
+}
+section.recent h2 span{font-weight:400;letter-spacing:0;text-transform:none;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.reclist{list-style:none;margin:0;padding:0}
+.rec{display:flex;align-items:baseline;gap:12px;padding:11px 2px;
+  border-bottom:1px solid var(--line)}
+.rec:last-child{border-bottom:0}
+.rec-name{flex:1;min-width:0;font-size:13.5px;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.rec-meta{font-size:11.5px;color:var(--ink3);flex:none;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.rec-empty{color:var(--ink3);font-size:13px;padding:12px 2px;list-style:none}
+
+footer{margin-top:26px;font-size:11.5px;color:var(--ink3);line-height:1.7;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+           stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">
+        <path d="M6.9 9.4c-1.3-1.3-2-3.1-1.7-4.6 1.7.1 3.6 1 4.7 2.3M17.1 9.4c1.3-1.3 2-3.1 1.7-4.6-1.7.1-3.6 1-4.7 2.3"/>
+        <circle cx="12" cy="14" r="7"/>
+        <ellipse cx="12" cy="16" rx="3.3" ry="2.4"/>
+        <path d="M10.9 16h.01M13.1 16h.01"/>
+      </svg>
+      <b>{{BRAND}}</b>
+    </div>
+    <div class="conn"><i class="dot"></i>已连接电视 · <span class="url">{{URL}}</span></div>
+  </header>
+
+  <div class="picker" id="picker">
+    <svg class="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+      <path d="M12 5v14M5 12h14"/>
+    </svg>
+    <div class="pick-t">选文件传到电视</div>
+    <div class="pick-s">照片 · 视频 · 安装包，可多选</div>
+    <button class="pick-btn" id="pickBtn" type="button">选择文件</button>
+    <input type="file" id="input" multiple hidden>
+  </div>
+
+  <ul class="queue" id="queue"></ul>
+
+  <section class="recent">
+    <h2>电视上已有 <span>{{RECENT_META}}</span></h2>
+    <ul class="reclist">{{RECENT}}</ul>
+  </section>
+
+  <footer>手机与电视连同一个 Wi-Fi 才能传<br>传输时别锁屏，锁屏会断开</footer>
+</div>
+
+<script>
+(function(){
+  var input = document.getElementById('input');
+  var picker = document.getElementById('picker');
+  var queue = document.getElementById('queue');
+  var pickBtn = document.getElementById('pickBtn');
+
+  function fmt(n){
+    if (!n && n !== 0) return '';
+    if (n < 1024) return n + ' B';
+    var u = ['KB','MB','GB','TB'], i = -1;
+    do { n /= 1024; i++; } while (n >= 1024 && i < u.length - 1);
+    return (n < 10 ? (Math.round(n * 10) / 10).toFixed(1) : Math.round(n)) + ' ' + u[i];
+  }
+
+  function rowFor(file){
+    var li = document.createElement('li');
+    li.className = 'q';
+    var top = document.createElement('div'); top.className = 'q-top';
+    var name = document.createElement('span'); name.className = 'q-name';
+    name.textContent = file.name;
+    var size = document.createElement('span'); size.className = 'q-size';
+    size.textContent = fmt(file.size);
+    top.appendChild(name); top.appendChild(size);
+    var bar = document.createElement('div'); bar.className = 'q-bar';
+    var fill = document.createElement('div'); fill.className = 'q-fill';
+    bar.appendChild(fill);
+    var state = document.createElement('div'); state.className = 'q-state';
+    state.textContent = '排队中';
+    li.appendChild(top); li.appendChild(bar); li.appendChild(state);
+    queue.insertBefore(li, queue.firstChild);
+    return { li: li, fill: fill, state: state };
+  }
+
+  function upload(file){
+    var ui = rowFor(file);
+    var xhr = new XMLHttpRequest();
+    xhr.open('PUT', '/upload?name=' + encodeURIComponent(file.name), true);
+    xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+
+    xhr.upload.onprogress = function(e){
+      if (!e.lengthComputable) return;
+      var pct = Math.min(100, Math.round(e.loaded / e.total * 100));
+      ui.fill.style.width = pct + '%';
+      ui.state.textContent = pct + '% · ' + fmt(e.loaded) + ' / ' + fmt(e.total);
+    };
+
+    xhr.onload = function(){
+      if (xhr.status === 200 || xhr.status === 201){
+        ui.li.classList.add('done');
+        ui.fill.style.width = '100%';
+        ui.state.textContent = '已送达电视';
+      } else {
+        ui.li.classList.add('err');
+        ui.state.textContent = xhr.responseText || ('失败（' + xhr.status + '）');
+      }
+    };
+
+    xhr.onerror = function(){
+      ui.li.classList.add('err');
+      ui.state.textContent = '网络断了，确认还在同一 Wi-Fi';
+    };
+
+    ui.state.textContent = '0% · ' + fmt(file.size);
+    xhr.send(file);
+  }
+
+  function handleFiles(list){
+    for (var i = 0; i < list.length; i++) upload(list[i]);
+  }
+
+  pickBtn.addEventListener('click', function(e){ e.stopPropagation(); input.click(); });
+  picker.addEventListener('click', function(){ input.click(); });
+  input.addEventListener('change', function(){
+    handleFiles(input.files);
+    input.value = '';
+  });
+
+  ['dragenter','dragover'].forEach(function(t){
+    picker.addEventListener(t, function(e){ e.preventDefault(); picker.classList.add('drag'); });
+  });
+  ['dragleave','drop'].forEach(function(t){
+    picker.addEventListener(t, function(e){ e.preventDefault(); picker.classList.remove('drag'); });
+  });
+  picker.addEventListener('drop', function(e){
+    if (e.dataTransfer && e.dataTransfer.files) handleFiles(e.dataTransfer.files);
+  });
+})();
+</script>
+</body>
+</html>
