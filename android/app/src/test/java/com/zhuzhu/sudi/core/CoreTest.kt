@@ -84,7 +84,7 @@ class CoreTest {
         assertEquals("video/mp4", MimeMap.mimeOf("海边日落.MP4"))
         assertEquals(FileKind.IMAGE, MimeMap.kindOf("a.jpg"))
         assertEquals(FileKind.AUDIO, MimeMap.kindOf("a.flac"))
-        assertEquals(FileKind.APK, MimeMap.kindOf("猪猪速递.apk"))
+        assertEquals(FileKind.APK, MimeMap.kindOf("猪猪传送门.apk"))
         assertEquals(FileKind.DOC, MimeMap.kindOf("说明书.pdf"))
         assertEquals(FileKind.ARCHIVE, MimeMap.kindOf("备份.zip"))
         assertEquals(FileKind.OTHER, MimeMap.kindOf("设计稿.psd"))
@@ -148,7 +148,7 @@ class CoreTest {
     fun index_round_trip_survives_nasty_names() {
         val records = listOf(
             Record(1, "海边日落_2026.mp4", 428L * 1048576, 1_700_000_000_000, "content://media/external/downloads/12"),
-            Record(2, "带 空格 和 % 号.txt", 12, 1_700_000_100_000, "file:///storage/emulated/0/Download/猪猪速递/x.txt"),
+            Record(2, "带 空格 和 % 号.txt", 12, 1_700_000_100_000, "file:///storage/emulated/0/Download/猪猪传送门/x.txt"),
             Record(3, "制表符\t换行\n的名字.apk", 99, 1_700_000_200_000, "content://media/external/downloads/13")
         )
         val decoded = IndexCodec.decode(IndexCodec.encode(records))
@@ -207,8 +207,8 @@ class CoreTest {
 
     @Test
     fun template_replaces_known_and_keeps_unknown() {
-        val out = PageTemplate.render("品牌={{BRAND}} 地址={{URL}} 未知={{MISS}}", mapOf("BRAND" to "猪猪速递", "URL" to "http://10.0.0.2:8080"))
-        assertEquals("品牌=猪猪速递 地址=http://10.0.0.2:8080 未知={{MISS}}", out)
+        val out = PageTemplate.render("品牌={{BRAND}} 地址={{URL}} 未知={{MISS}}", mapOf("BRAND" to "猪猪传送门", "URL" to "http://10.0.0.2:8080"))
+        assertEquals("品牌=猪猪传送门 地址=http://10.0.0.2:8080 未知={{MISS}}", out)
     }
 
     @Test

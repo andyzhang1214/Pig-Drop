@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>猪猪速递 · 电视局域网接收站 · 交互原型</title>
+<title>猪猪传送门 · 电视局域网接收站 · 交互原型</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Crect%20width='24'%20height='24'%20rx='5'%20fill='%230f1416'/%3E%3Cg%20fill='none'%20stroke='%233ddcae'%20stroke-width='1.5'%20stroke-linejoin='round'%20stroke-linecap='round'%20transform='translate(1.2%200.5)%20scale(0.9)'%3E%3Cpath%20d='M6.9%209.4c-1.3-1.3-2-3.1-1.7-4.6%201.7.1%203.6%201%204.7%202.3M17.1%209.4c1.3-1.3%202-3.1%201.7-4.6-1.7.1-3.6%201-4.7%202.3'/%3E%3Ccircle%20cx='12'%20cy='14'%20r='7'/%3E%3Cellipse%20cx='12'%20cy='16'%20rx='3.3'%20ry='2.4'/%3E%3Cpath%20d='M10.9%2016h.01M13.1%2016h.01'/%3E%3C/g%3E%3C/svg%3E">
 <style>
 @import url("https://cdn.jsdelivr.net/npm/@fontsource/bebas-neue@5.0.0/index.css");
@@ -515,7 +515,7 @@ body{
 
   <header class="masthead">
     <div>
-      <div class="wordmark"><b id="appName">猪猪速递</b><span>Piggy Express · TV File Drop</span></div>
+      <div class="wordmark"><b id="appName">猪猪传送门</b><span>Piggy Portal · TV File Drop</span></div>
       <p>电视端启动即成为一个局域网接收站，屏幕显示二维码；手机扫码打开网页直接上传，<em>手机上不需要安装任何应用</em>。以下为可交互原型——用键盘方向键遥控电视，往下对着手机拖文件。</p>
     </div>
     <div class="controls">
@@ -553,7 +553,7 @@ body{
                       <path d="M10.9 16h.01M13.1 16h.01"/>
                     </svg>
                   </span>
-                  <span class="brand-name" id="tvName">猪猪速递</span>
+                  <span class="brand-name" id="tvName">猪猪传送门</span>
                   <span class="brand-role">局域网接收站</span>
                 </div>
                 <div class="tv-meta">
@@ -648,7 +648,7 @@ body{
                   <div class="srow" data-f="s1" data-toggle="1"><span class="k">接收文件前需要四位口令</span>
                     <span class="v"><span class="tog" data-on="0"><i></i></span></span></div>
                   <div class="srow" data-f="s2"><span class="k">保存位置</span>
-                    <span class="v">内部存储 / Movies / 猪猪速递</span></div>
+                    <span class="v">内部存储 / Movies / 猪猪传送门</span></div>
                   <div class="srow" data-f="s3"><span class="k">单文件大小上限</span>
                     <span class="v">不限制</span></div>
                   <div class="srow" data-f="s4" data-toggle="1"><span class="k">接收完成后自动打开</span>
@@ -732,7 +732,7 @@ body{
                       <ellipse cx="12" cy="16" rx="3.3" ry="2.4"/>
                       <path d="M10.9 16h.01M13.1 16h.01"/>
                     </svg>
-                    <span id="phName">猪猪速递</span>
+                    <span id="phName">猪猪传送门</span>
                   </span>
                   <span class="ph-live"><span class="live" style="width:6px;height:6px"></span>已连接</span>
                 </div>
@@ -813,7 +813,7 @@ body{
 (function(){
   "use strict";
 
-  var APP_NAME = "猪猪速递";          // ← 换名字只需要改这一处
+  var APP_NAME = "猪猪传送门";          // ← 换名字只需要改这一处
   var HOST = "192.168.1.42:8080";
   var URL_STR = "http://" + HOST;
 
@@ -1608,7 +1608,7 @@ body{
   state.files = [
     { id: 901, name: "海边日落_2026.mp4", size: 428 * 1048576, kind: "video", time: "12 分钟前" },
     { id: 902, name: "家庭聚会_合影.jpg", size: 6.4 * 1048576, kind: "image", time: "34 分钟前" },
-    { id: 903, name: "猪猪速递_安装包.apk", size: 18.2 * 1048576, kind: "apk", time: "1 小时前" },
+    { id: 903, name: "猪猪传送门_安装包.apk", size: 18.2 * 1048576, kind: "apk", time: "1 小时前" },
     { id: 904, name: "通勤歌单.mp3", size: 42.6 * 1048576, kind: "audio", time: "2 小时前" }
   ];
   renderList();
