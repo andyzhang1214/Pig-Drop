@@ -144,4 +144,3 @@ screenshots/
 - **[DeepSeek](https://www.deepseek.com/)** —— 项目的代码、文档和设计记录主要由 DeepSeek 模型撰写
 - **[WorkBuddy](https://www.workbuddy.cn/)** —— 在它的环境里完成构建、模拟器验证和逐屏截图
 
-有它们，一个人下班后也能把一个想法做到能装到电视上用。
