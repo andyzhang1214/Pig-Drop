@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 自适应图标的前景层：猪头标记，取夜航主题的 accent（#20F4BB）。
+     108 画布上按 3.3 倍放大并居中；再大一点（3.6 倍）耳尖就会顶到圆形
+     遮罩的边界被切平，3.3 倍是耳尖完整、构图又不显小的折中。
+     鼻头做成实心而不是细线圆环——缩到 48px 时细线会糊成一坨，
+     实心块加两个挖空的鼻孔才认得出是猪。 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <group
+        android:scaleX="3.3"
+        android:scaleY="3.3"
+        android:translateX="14.4"
+        android:translateY="11.43">
+
+        <path
+            android:pathData="M6.9,9.4 C5.6,8.1 4.9,6.3 5.2,4.8 C6.9,4.9 8.8,5.8 9.9,7.1 M17.1,9.4 C18.4,8.1 19.1,6.3 18.8,4.8 C17.1,4.9 15.2,5.8 14.1,7.1"
+            android:strokeColor="#20F4BB"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:strokeWidth="1.9" />
+
+        <path
+            android:pathData="M5,14 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0"
+            android:strokeColor="#20F4BB"
+            android:strokeLineJoin="round"
+            android:strokeWidth="1.9" />
+
+        <path
+            android:fillColor="#20F4BB"
+            android:pathData="M7.9,15.7 a4.1,2.9 0 1,0 8.2,0 a4.1,2.9 0 1,0 -8.2,0" />
+
+        <path
+            android:pathData="M10.9,15.7 L11.5,15.7 M12.5,15.7 L13.1,15.7"
+            android:strokeColor="#0E161F"
+            android:strokeLineCap="round"
+            android:strokeWidth="1.5" />
+    </group>
+</vector>

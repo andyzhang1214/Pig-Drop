@@ -236,8 +236,8 @@ class MainActivity : Activity(), FileListView.Listener {
             repo = repo,
             storage = storage,
             palette = { palette },
-            brand = { BRAND },
-            page = { PhonePage.build(this, baseUrl(), palette, BRAND, repo.records) },
+            brand = { getString(R.string.app_name) },
+            page = { PhonePage.build(this, baseUrl(), palette, getString(R.string.app_name), repo.records) },
             onUploaded = { record -> runOnUiThread { onReceived(record) } },
             onProgress = { name, sent, total -> runOnUiThread { showIncoming(name, sent, total) } }
         )
@@ -584,8 +584,8 @@ class MainActivity : Activity(), FileListView.Listener {
     companion object {
         private const val DEFAULT_PORT = 8080
         private const val REQ_STORAGE = 1001
-        // 对外品牌名，落盘目录名见 Storage.FOLDER，两者保持一致
-        private const val BRAND = "PigDrop"
+        // 对外品牌名统一取 @string/app_name：电视界面、手机上传页、桌面图标名都来自这一处。
+        // 落盘目录名是另一回事，仍是 ASCII 的 Storage.FOLDER。
 
         /** 只会「接住就退出」的占位包，不能算作能打开文件的应用。 */
         private val STUB_PACKAGES = setOf("com.android.tv.frameworkpackagestubs")

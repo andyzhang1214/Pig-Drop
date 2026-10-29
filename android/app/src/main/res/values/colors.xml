@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 启动图标底色：取夜航主题的 bg2（#0E161F），比 bg 略亮一档，
+         免得纯黑方块在深色的电视桌面上和背景糊在一起。 -->
+    <color name="ic_launcher_bg">#0E161F</color>
+</resources>
