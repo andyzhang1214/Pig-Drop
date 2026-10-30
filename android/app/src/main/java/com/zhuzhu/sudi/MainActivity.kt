@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
@@ -50,6 +51,9 @@ class MainActivity : Activity(), FileListView.Listener {
 
     private var palette: Palette = Palettes.NOIR
     private var manageMode = false
+
+    /** 用户点了「打开」但还没拿到安装权限的那个 APK。从设置页回来时接着装，不用他重新找。 */
+    private var pendingInstall: Record? = null
 
     private lateinit var root: FrameLayout
     private lateinit var brandMark: ImageView
@@ -475,6 +479,20 @@ class MainActivity : Activity(), FileListView.Listener {
 
     private fun openRecord(record: Record) {
         if (manageMode) return
+        // APK 先自己看一眼「安装未知应用」开没开。没开时照样发 intent 的话，用户拿到的是
+        // PackageInstaller 弹的全英文对话框（For your security, your TV currently isn't
+        // allowed to install unknown apps...），中文用户既看不懂也不知道该点哪个，
+        // 表现就是「传到电视上装不了」。这里提前拦住，用中文说清去哪开。
+        if (MimeMap.kindOf(record.name) == FileKind.APK && !canInstallApk()) {
+            pendingInstall = record
+            overlays.rememberFocus(currentFocus)
+            overlays.showInstallBlocked(
+                onOpenSettings = { openUnknownAppSources() },
+                onCancel = { pendingInstall = null }
+            )
+            return
+        }
+        pendingInstall = null
         val uri = storage.accessUri(record)
         if (uri == null) {
             overlays.rememberFocus(currentFocus)
@@ -499,6 +517,49 @@ class MainActivity : Activity(), FileListView.Listener {
             overlays.rememberFocus(currentFocus)
             overlays.showOpenFailed(record, adviceFor(record))
         }
+    }
+
+    /**
+     * 能不能装 APK？
+     *
+     * Android 8.0 起「安装未知应用」是按应用单独授权的，必须问 `canRequestPackageInstalls`；
+     * 7.x 及以下只有系统级的「未知来源」总开关，应用查不到也没有权限改，只能放行让系统判断。
+     */
+    private fun canInstallApk(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return true
+        return packageManager.canRequestPackageInstalls()
+    }
+
+    /** 跳到系统里给本应用授权「安装未知应用」的那一页。 */
+    private fun openUnknownAppSources() {
+        val target = Uri.parse("package:$packageName")
+        val direct = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, target)
+        try {
+            startActivity(direct)
+            return
+        } catch (e: Exception) {
+            // 有些电视固件把这一页裁掉了，退一步到应用详情页
+        }
+        try {
+            startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, target))
+        } catch (e: Exception) {
+            pendingInstall = null
+            Toast.makeText(
+                this,
+                "这台电视没有开放的安装设置页，试试把 APK 拷到 U 盘再装",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // 从「安装未知应用」页面回来：如果开关已经打开，就把刚才那次「打开」接着做完。
+        // 没打开就什么都不做——用户可能还在设置里翻，别拿浮层打断他。
+        val pending = pendingInstall ?: return
+        if (!canInstallApk()) return
+        pendingInstall = null
+        openRecord(pending)
     }
 
     /**
@@ -534,7 +595,8 @@ class MainActivity : Activity(), FileListView.Listener {
         val ext = MimeMap.extensionOf(record.name)
         return when (MimeMap.kindOf(record.name)) {
             FileKind.APK ->
-                "电视上没找到安装器，或者不允许安装未知来源应用。\n去「设置 → 安全」里打开「允许安装未知应用」再试。"
+                // 权限问题已经在 openRecord 入口拦掉了，走到这里只剩「系统里根本没有安装器」
+                "这台电视没有能装 APK 的入口。\n有些电视只允许从自带商店或 U 盘安装，可以去「设置 → 应用」里找找。"
             FileKind.ARCHIVE ->
                 "压缩包一般没有应用能直接打开。\n拷到 U 盘，在电脑上解压。"
             FileKind.VIDEO -> "电视上没有能播放 .$ext 的应用。\n装一个播放器就能直接看，或者拷到 U 盘在电脑上放。"

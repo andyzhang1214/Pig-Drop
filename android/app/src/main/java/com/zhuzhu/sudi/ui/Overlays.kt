@@ -149,6 +149,71 @@ class Overlays(
         show(frame(card, widthDp = 520f), back)
     }
 
+    // ---------- 需要先授权才能装 APK ----------
+
+    /**
+     * 系统不允许本应用安装 APK 时的中文说明。
+     *
+     * 不加这一层的话，用户按「打开」看到的是 PackageInstaller 弹的
+     * "For your security, your TV currently isn't allowed to install unknown apps
+     * from this source"——全英文、两个按钮 Settings / Cancel，中文用户完全不知道该干什么，
+     * 表现就是「点了没反应、装不上」。这里提前拦住，用中文说清去哪开、开完怎么继续。
+     */
+    fun showInstallBlocked(onOpenSettings: () -> Unit, onCancel: () -> Unit = {}) {
+        val p = palette
+        val card = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+            setPadding(dp(40f), dp(30f), dp(40f), dp(26f))
+            background = Draw.rect(p.surface, dpF(p.radiusDp * 1.1f), dp(1f), p.line2)
+        }
+
+        card.addView(ImageView(context).apply {
+            setImageResource(R.drawable.ic_kind_apk)
+            setColorFilter(p.accent)
+            background = Draw.rect(Color.TRANSPARENT, dpF(p.radiusDp), dp(1f), p.line2)
+            setPadding(dp(18f), dp(18f), dp(18f), dp(18f))
+            layoutParams = LinearLayout.LayoutParams(dp(72f), dp(72f))
+        })
+
+        card.addView(UiKit.text(context, 21f, p.ink, p.display).apply {
+            text = "电视还没允许装软件"
+            gravity = Gravity.CENTER
+            setPadding(0, dp(18f), 0, 0)
+        })
+
+        card.addView(UiKit.text(context, 13f, p.ink2, p.body).apply {
+            text = "系统默认不让本应用安装 APK。\n打开下面这一页，把开关打开，回来再点一次「打开」就行。"
+            gravity = Gravity.CENTER
+            setLineSpacing(dpF(5f), 1f)
+            setPadding(0, dp(14f), 0, 0)
+        })
+
+        // 各家电视的设置入口名字不一样，写一条最常见的路径，找不到时还能照着翻
+        card.addView(UiKit.text(context, 11.5f, p.ink3, p.mono).apply {
+            text = "设置 → 应用 → 特殊应用权限 → 安装未知应用"
+            gravity = Gravity.CENTER
+            setPadding(0, dp(12f), 0, 0)
+        })
+
+        val buttons = LinearLayout(context).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER
+            setPadding(0, dp(22f), 0, 0)
+        }
+        val cancel = chip("以后再说", p, danger = false)
+        val go = chip("去打开设置", p, danger = false, primary = true)
+        buttons.addView(cancel)
+        buttons.addView(go)
+        card.addView(buttons)
+
+        // 默认焦点放在「去打开设置」上：用户点「打开」的本意就是要装，不该让他多按一下
+        cancel.setOnClickListener { dismiss(); onCancel() }
+        go.setOnClickListener { dismiss(); onOpenSettings() }
+
+        show(frame(card, widthDp = 520f), go)
+    }
+
     // ---------- 放大的二维码 ----------
 
     fun showBigQr(bitmap: android.graphics.Bitmap, url: String) {
@@ -333,7 +398,7 @@ class Overlays(
         }
     }
 
-    private fun chip(label: String, p: Palette, danger: Boolean): TextView {
+    private fun chip(label: String, p: Palette, danger: Boolean, primary: Boolean = false): TextView {
         return TextView(context).apply {
             text = label
             textSize = 13f
@@ -348,16 +413,39 @@ class Overlays(
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, dp(32f)
             ).apply { marginStart = dp(10f) }
-            background = Draw.states(
-                normalFill = Color.TRANSPARENT,
-                radiusPx = dpF(p.radiusDp * 0.7f),
-                lineColor = if (danger) Draw.withAlpha(p.danger, 0.5f) else p.line2,
-                linePx = dp(1f),
-                focusFill = if (danger) Draw.withAlpha(p.danger, 0.16f) else p.surface2,
-                focusLine = if (danger) p.danger else p.accent,
-                focusLinePx = dp(2f)
+            background = when {
+                // 主操作：实心强调色，和设置里的「当前主题」同一个视觉权重
+                primary -> Draw.states(
+                    normalFill = p.accent, radiusPx = dpF(p.radiusDp * 0.7f),
+                    lineColor = p.accent, linePx = dp(1f),
+                    focusFill = p.accent, focusLine = p.ink, focusLinePx = dp(2f)
+                )
+                danger -> Draw.states(
+                    normalFill = Color.TRANSPARENT,
+                    radiusPx = dpF(p.radiusDp * 0.7f),
+                    lineColor = Draw.withAlpha(p.danger, 0.5f),
+                    linePx = dp(1f),
+                    focusFill = Draw.withAlpha(p.danger, 0.16f),
+                    focusLine = p.danger,
+                    focusLinePx = dp(2f)
+                )
+                else -> Draw.states(
+                    normalFill = Color.TRANSPARENT,
+                    radiusPx = dpF(p.radiusDp * 0.7f),
+                    lineColor = p.line2,
+                    linePx = dp(1f),
+                    focusFill = p.surface2,
+                    focusLine = p.accent,
+                    focusLinePx = dp(2f)
+                )
+            }
+            setTextColor(
+                when {
+                    primary -> p.accentInk
+                    danger -> p.danger
+                    else -> p.ink2
+                }
             )
-            setTextColor(if (danger) p.danger else p.ink2)
         }
     }
 
